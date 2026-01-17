@@ -73,6 +73,10 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
           <Text style={styles.statLabel}>Pickles</Text>
         </View>
         <View style={styles.statItem}>
+          <Text style={[styles.statValue, styles.aceValue]}>🎾 {user.total_aces || 0}</Text>
+          <Text style={styles.statLabel}>Aces</Text>
+        </View>
+        <View style={styles.statItem}>
           <Text style={styles.statValue}>{(user.show_rate * 100).toFixed(0)}%</Text>
           <Text style={styles.statLabel}>Show Rate</Text>
         </View>
@@ -169,6 +173,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 4,
+  },
+  aceValue: {
+    color: '#22c55e',
   },
   statLabel: {
     fontSize: 12,

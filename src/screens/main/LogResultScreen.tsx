@@ -16,8 +16,7 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
   const [session, setSession] = useState<any>(null);
   const [team1Score, setTeam1Score] = useState('');
   const [team2Score, setTeam2Score] = useState('');
-  const [team1Aces, setTeam1Aces] = useState(0);
-  const [team2Aces, setTeam2Aces] = useState(0);
+  const [playerAces, setPlayerAces] = useState<Record<string, number>>({});
   const [hadATP, setHadATP] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -31,15 +30,30 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
         .from('sessions')
         .select(`
           *,
-          session_participants(*, users(username))
+          session_participants(*, users(username, id))
         `)
         .eq('id', sessionId)
         .single();
 
-      if (data) setSession(data);
+      if (data) {
+        setSession(data);
+        // Initialize ace counts for all players
+        const initialAces: Record<string, number> = {};
+        data.session_participants?.forEach((p: any) => {
+          initialAces[p.user_id] = 0;
+        });
+        setPlayerAces(initialAces);
+      }
     } catch (error) {
       console.error('Error loading session:', error);
     }
+  };
+
+  const updatePlayerAces = (userId: string, delta: number) => {
+    setPlayerAces(prev => ({
+      ...prev,
+      [userId]: Math.max(0, (prev[userId] || 0) + delta),
+    }));
   };
 
   const handleSubmit = async () => {
@@ -79,8 +93,6 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
           created_by: user.id,
           team1_score: score1,
           team2_score: score2,
-          team1_aces: team1Aces,
-          team2_aces: team2Aces,
           is_pickle: isPickle,
           had_atp: hadATP,
           verified: false, // Needs confirmations (especially if ATP)
@@ -89,6 +101,20 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
         .single();
 
       if (resultError) throw resultError;
+
+      // Update aces for each player in session_participants
+      for (const [userId, aceCount] of Object.entries(playerAces)) {
+        if (aceCount > 0) {
+          await supabase
+            .from('session_participants')
+            .update({ aces_served: aceCount })
+            .eq('session_id', sessionId)
+            .eq('user_id', userId);
+
+          // Update user's lifetime total
+          await supabase.rpc('update_user_total_aces', { p_user_id: userId });
+        }
+      }
 
       // Auto-confirm for creator
       await supabase
@@ -164,15 +190,26 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
       }
 
       // Ace feed post if applicable
-      const totalAces = team1Aces + team2Aces;
+      const totalAces = Object.values(playerAces).reduce((sum, count) => sum + count, 0);
       if (totalAces > 0) {
+        // Find top ace server
+        let topAcePlayer: any = null;
+        let maxAces = 0;
+        for (const [userId, aceCount] of Object.entries(playerAces)) {
+          if (aceCount > maxAces) {
+            maxAces = aceCount;
+            const player = session.session_participants?.find((p: any) => p.user_id === userId);
+            topAcePlayer = player?.users;
+          }
+        }
+
         let aceContent = '';
         if (totalAces >= 5) {
-          aceContent = `🔥 ACE FEST! ${totalAces} aces served! Absolutely dominant!`;
+          aceContent = `🔥 ACE FEST! ${totalAces} aces served!${topAcePlayer ? ` ${topAcePlayer.username} led with ${maxAces}!` : ' Absolutely dominant!'}`;
         } else if (totalAces >= 3) {
-          aceContent = `⚡ ${totalAces} aces! Serving heat!`;
+          aceContent = `⚡ ${totalAces} aces!${topAcePlayer && maxAces > 1 ? ` ${topAcePlayer.username} served ${maxAces}!` : ' Serving heat!'}`;
         } else {
-          aceContent = `🎾 ${totalAces} ace${totalAces > 1 ? 's' : ''} served!`;
+          aceContent = `🎾 ${totalAces} ace${totalAces > 1 ? 's' : ''} served!${topAcePlayer ? ` by ${topAcePlayer.username}` : ''}`;
         }
 
         await supabase
@@ -285,48 +322,30 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
         </View>
       </View>
 
-      {/* Ace counters */}
+      {/* Ace counters - per player */}
       <View style={styles.aceCounters}>
         <Text style={styles.aceCountersLabel}>Aces Served (Optional)</Text>
-        <View style={styles.aceCounterRow}>
-          <View style={styles.aceCounter}>
-            <Text style={styles.aceCounterLabel}>Team 1</Text>
+        <Text style={styles.aceHint}>Track individual ace counts - builds your profile badge!</Text>
+        {session.session_participants?.map((participant: any) => (
+          <View key={participant.user_id} style={styles.playerAceRow}>
+            <Text style={styles.playerAceName}>{participant.users?.username}</Text>
             <View style={styles.counterButtons}>
               <TouchableOpacity
                 style={styles.counterButton}
-                onPress={() => setTeam1Aces(Math.max(0, team1Aces - 1))}
+                onPress={() => updatePlayerAces(participant.user_id, -1)}
               >
                 <Text style={styles.counterButtonText}>-</Text>
               </TouchableOpacity>
-              <Text style={styles.counterValue}>{team1Aces}</Text>
+              <Text style={styles.counterValue}>{playerAces[participant.user_id] || 0}</Text>
               <TouchableOpacity
                 style={styles.counterButton}
-                onPress={() => setTeam1Aces(team1Aces + 1)}
+                onPress={() => updatePlayerAces(participant.user_id, 1)}
               >
                 <Text style={styles.counterButtonText}>+</Text>
               </TouchableOpacity>
             </View>
           </View>
-
-          <View style={styles.aceCounter}>
-            <Text style={styles.aceCounterLabel}>Team 2</Text>
-            <View style={styles.counterButtons}>
-              <TouchableOpacity
-                style={styles.counterButton}
-                onPress={() => setTeam2Aces(Math.max(0, team2Aces - 1))}
-              >
-                <Text style={styles.counterButtonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.counterValue}>{team2Aces}</Text>
-              <TouchableOpacity
-                style={styles.counterButton}
-                onPress={() => setTeam2Aces(team2Aces + 1)}
-              >
-                <Text style={styles.counterButtonText}>+</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
+        ))}
       </View>
 
       {/* Quick score buttons */}
@@ -480,22 +499,28 @@ const styles = StyleSheet.create({
   aceCountersLabel: {
     fontSize: 14,
     fontWeight: '600',
-    marginBottom: 12,
-    color: '#6b7280',
-  },
-  aceCounterRow: {
-    flexDirection: 'row',
-    gap: 20,
-  },
-  aceCounter: {
-    flex: 1,
-  },
-  aceCounterLabel: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: '#6b7280',
     marginBottom: 8,
-    textAlign: 'center',
+    color: '#6b7280',
+  },
+  aceHint: {
+    fontSize: 12,
+    color: '#6b7280',
+    marginBottom: 12,
+    fontStyle: 'italic',
+  },
+  playerAceRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingVertical: 8,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f3f4f6',
+  },
+  playerAceName: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#374151',
+    flex: 1,
   },
   counterButtons: {
     flexDirection: 'row',

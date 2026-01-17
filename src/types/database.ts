@@ -22,6 +22,7 @@ export interface User {
   self_level: number; // 1-6
   preferred_format?: PlayFormat;
   pickle_trophy_count: number;
+  total_aces: number; // Lifetime aces served
   show_rate: number;
   cancel_count: number;
   created_at: string;
@@ -120,6 +121,7 @@ export interface SessionParticipant {
   user_id: string;
   team?: number;
   checked_in: boolean;
+  aces_served: number; // Aces served in this session
   created_at: string;
 }
 
