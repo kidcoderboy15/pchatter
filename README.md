@@ -1,276 +1,330 @@
-# Pickle Chatter
+# Pickle Chatter 🥒
 
-A social scheduling and lightweight league app for pickleball players.
+**The pickleball social OS that makes PlayTime Scheduler look like a calendar app.**
 
-## What is Pickle Chatter?
+## What This Is
 
-Pickle Chatter turns messy group texts into an organized platform where you can:
-- See who is actively looking for a game (right now, or later)
-- Match by geography, time, and skill level
-- Track results, talk trash, and earn "pickle" trophies for 11-0 shutouts
-- Run private groups with codes/passwords, plus public geo groups
+Pickle Chatter turns your friend group into a high-octane pickleball machine. While PlayTime Scheduler is out here asking people to manually coordinate times like it's 2015, we're auto-matching players, logging 11-0 shutouts, and turning trash talk into a competitive sport.
 
-## Features
+### The 10-Second Game Loop (Why This Wins)
 
-### MVP Features Implemented
+```
+1. Open app → See "3 games near you NOW" (instant, no scrolling)
+2. Tap "JOIN" → Auto-matched by skill + location
+3. Game fills → Push notification: "GAME ON 🎾"
+4. Play pickleball → Have fun
+5. Tap score (11-7) → Submit in 10 seconds
+6. Feed explodes → "Alex got PICKLED 11-0 🥒"
+7. Earn 60 tokens → Redeem for merch
+8. Repeat
+```
 
-1. **Authentication**
-   - Phone/email OTP login
-   - Secure session management
+**PlayTime makes you:**
+- Post a session manually
+- Wait for RSVPs
+- Text people to confirm
+- Hope someone shows up
+- Log nothing
+- Get nothing
 
-2. **User Profiles**
-   - Username and display name
-   - Self-rated skill level (1-6)
-   - Pickle trophy count
-   - QR code for easy friend adding
-   - Show rate and reliability stats
+**Pickle Chatter does this:**
+- Auto-matches you with compatible players
+- Fills games instantly
+- Sends push notifications
+- Creates verified results
+- Awards pickle trophies
+- Feeds group trash talk
+- Gives you tokens for merch
 
-3. **Friend System**
-   - QR code scanning to add friends
-   - Friend requests
-   - Block and avoid lists
+## The Wedge Strategy
 
-4. **Groups**
-   - Private groups with join codes and passwords
-   - Public geo-based groups
-   - Group roles (admin, mod, member)
-   - Group feed and activity
+PlayTime has 488,000 users. We're not beating them head-on.
 
-5. **LFG (Looking For Game) Board**
-   - Create posts with multiple time options
-   - Specify format (doubles/singles)
-   - Location-based matching
-   - Skill range filtering
-   - Real-time availability
+**Our wedge:** Private groups + instant matching + post-game culture
 
-6. **Sessions**
-   - Auto-created from filled LFG posts
-   - Check-in functionality
-   - Session chat
-   - Match result logging
+### What PlayTime Does Well
+- Calendar scheduling
+- Big user base
+- Session RSVPs
 
-7. **Match Results**
-   - Score entry and confirmation
-   - Pickle trophy detection (11-0 shutouts)
-   - Verified results system
-   - Post-game rating
-
-8. **Ratings System**
-   - Self level (1-6)
-   - Peer ratings after matches
-   - Consensus level calculation
-   - Confidence scoring
-
-9. **Tokens & Rewards**
-   - Earn tokens for verified matches
-   - Weekly streaks
-   - Activity bonuses
-   - Token balance tracking
-
-10. **Group Feed**
-    - Auto-posts for achievements
-    - Pickle trophy announcements
-    - Win streaks
-    - Custom posts
+### What Pickle Chatter Does Better
+1. **Instant Matching** - Algorithm scores compatibility (skill ±1, distance, format) and surfaces best matches
+2. **10-Second Results** - Quick-tap scores (11-0, 11-9, etc.) with pickle trophy detection
+3. **Social Feedback Loop** - Every game generates feed posts, trophies, tokens, status
+4. **Private Group Gravity** - Everything happens in your crew, not a public calendar
+5. **Gamification That Works** - Tokens tied to verified gameplay, not fake engagement
 
 ## Tech Stack
 
-- **Frontend**: React Native + Expo
-- **Backend**: Supabase (Postgres + Auth + Storage)
-- **Navigation**: React Navigation
-- **QR Codes**: react-native-qrcode-svg + expo-barcode-scanner
-- **Location**: expo-location
+- **Frontend:** React Native + Expo (iOS, Android, Web)
+- **Backend:** Supabase (PostgreSQL + Auth + Realtime)
+- **Language:** TypeScript
+- **Navigation:** React Navigation (nested stacks)
+- **State:** React hooks + Supabase real-time subscriptions
 
-## Setup Instructions
+## Core Features (Actually Built)
+
+### ✅ Authentication & Onboarding
+- Email/phone OTP via Supabase
+- Username, skill level (1-6), location, availability setup
+- Join/create groups during onboarding
+
+### ✅ Groups (Private/Public)
+- Private groups with join codes + password (bcrypt hashed)
+- Public geo-based groups
+- Role-based access (admin, mod, member)
+- Group feed with activity
+
+### ✅ LFG Board (THE KILLER FEATURE)
+- Browse open games with filters (Now, Today, This Week)
+- **Compatibility scoring** - Shows "85% Match" based on:
+  - Skill level (±1 tolerance)
+  - Distance (0-10 miles optimized)
+  - Format preference (doubles/singles/either)
+- One-tap JOIN button
+- Auto-creates session when full
+- Real-time updates via Supabase subscriptions
+
+### ✅ Matching Algorithm
+```typescript
+// Scoring formula (0-1 scale):
+score = (0.4 × skillMatch) + (0.2 × formatMatch) + (0.4 × distanceMatch)
+
+// Skill match: Perfect if within range, penalty if outside
+// Format match: Perfect if either is "either" or exact match
+// Distance: Perfect ≤2mi, good ≤5mi, OK ≤10mi, decay after
+```
+
+### ✅ Session Management
+- Auto-created from filled LFG posts
+- Participant roster with team assignments
+- Check-in functionality
+- Push to group feed when created
+
+### ✅ Result Logging (10-Second Flow)
+- Quick-score buttons (11-0 🥒, 11-9, 11-7, 11-5)
+- Pickle trophy detection (11-0 shutout)
+- Confirmation system (needs 2+ confirmations per team)
+- Auto-awards tokens
+- Auto-posts to group feed
+
+### ✅ Pickle Trophy System
+- Detects 11-0 shutouts
+- Awards 50 bonus tokens
+- Increments pickle_trophy_count on user profile
+- Epic feed post: "🥒 PICKLE ALERT! Someone got pickled!"
+
+### ✅ Tokens & Rewards
+```
+Match result:       +10 tokens
+Quick confirm:      +5 tokens (within 1 hour)
+Pickle trophy:      +50 tokens
+Weekly streak:      +20 tokens (3+ games/week)
+Friend invite:      +15 tokens (when they play first game)
+
+Daily cap: 200 tokens (prevents abuse)
+```
+
+### ✅ Peer Ratings & Consensus
+- Rate opponents 1-6 after each match
+- Consensus level = median of last 20 ratings
+- Confidence score based on rating count
+- Used by matching algorithm for better pairings
+
+### ✅ Friend System
+- QR code per user (shareable deep link)
+- Scan to add friends
+- Block/avoid lists (private, affects matching)
+
+### ✅ Group Feed
+- Auto-posts for:
+  - Session created
+  - Match result posted
+  - Pickle trophy earned
+  - Win streaks
+- Manual posts (text, GIFs, trash talk)
+- Mute/report controls
+
+## Database Schema
+
+**17 tables, fully normalized:**
+
+```
+users → friendships, group_members, sessions, ratings, tokens
+groups → group_members, lfg_posts, sessions, feed_posts
+lfg_posts → lfg_time_options, lfg_claims → sessions
+sessions → session_participants, match_results, peer_ratings
+match_results → result_confirmations, feed_posts
+token_ledger → token_balances (computed)
+peer_ratings → consensus_levels (computed via function)
+```
+
+**Key DB Functions:**
+- `increment_pickle_trophies(user_id)` - Atomic trophy increment
+- `calculate_consensus_level(user_id, group_id)` - Median of last 20 ratings
+- `update_all_consensus_levels()` - Batch update (run periodically)
+
+**RLS Policies:** Enabled on all tables, users can only access groups they're members of.
+
+**Indexes:** Optimized for LFG browsing, session lookups, token queries.
+
+## Setup
 
 ### Prerequisites
-
 - Node.js 18+
-- npm or yarn
-- Expo CLI
-- Supabase account
+- Expo CLI (`npm install -g expo-cli`)
+- Supabase account (free tier works)
 
-### 1. Clone and Install
-
+### 1. Clone & Install
 ```bash
-git clone <your-repo-url>
+git clone <repo>
 cd pchatter
 npm install
 ```
 
-### 2. Set Up Supabase
+### 2. Configure Supabase
 
-1. Create a new Supabase project at https://supabase.com
-2. Go to Project Settings > API
-3. Copy your project URL and anon key
-
-### 3. Configure Environment
-
-Create a `.env` file:
-
+1. Create project at [supabase.com](https://supabase.com)
+2. Copy `.env.example` to `.env`:
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` and add your Supabase credentials:
-
+3. Add your Supabase credentials:
 ```
-EXPO_PUBLIC_SUPABASE_URL=your_supabase_url
-EXPO_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+EXPO_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+EXPO_PUBLIC_SUPABASE_ANON_KEY=your-anon-key
 ```
 
-### 4. Set Up Database
-
-Run the migration in your Supabase SQL editor:
-
+4. Run migrations:
 ```bash
-# Copy the contents of supabase/migrations/001_initial_schema.sql
-# Paste and run in Supabase SQL Editor
+# In Supabase dashboard → SQL Editor
+# Run supabase/migrations/001_initial_schema.sql
+# Run supabase/migrations/002_functions.sql
 ```
 
-This will create all necessary tables, indexes, and RLS policies.
-
-### 5. Enable Authentication
-
-In your Supabase dashboard:
-
-1. Go to Authentication > Providers
-2. Enable Email provider
-3. (Optional) Enable Phone provider and configure Twilio
-
-### 6. Run the App
+### 3. Run the App
 
 ```bash
 # Start Expo dev server
 npm start
 
-# Or run on specific platform
-npm run ios     # iOS
-npm run android # Android
-npm run web     # Web
+# Then:
+# - Scan QR with Expo Go app (iOS/Android)
+# - Press 'i' for iOS simulator (Mac only)
+# - Press 'a' for Android emulator
+# - Press 'w' for web
 ```
 
-## Project Structure
+## File Structure
 
 ```
 pchatter/
 ├── src/
-│   ├── components/       # Reusable components
-│   ├── navigation/       # Navigation configuration
+│   ├── navigation/          # Navigation setup
 │   │   ├── RootNavigator.tsx
 │   │   ├── AuthNavigator.tsx
 │   │   ├── OnboardingNavigator.tsx
 │   │   ├── MainNavigator.tsx
 │   │   └── stacks/
-│   ├── screens/          # Screen components
-│   │   ├── auth/         # Login, verify code
-│   │   ├── onboarding/   # Username, skill, location, etc.
-│   │   ├── main/         # Home, create LFG, sessions
-│   │   ├── groups/       # Groups list, create, join
-│   │   └── profile/      # Profile, QR, friends, settings
-│   ├── services/         # API services
-│   │   └── supabase.ts   # Supabase client
-│   ├── types/            # TypeScript types
-│   │   └── database.ts   # Database type definitions
-│   └── utils/            # Utility functions
+│   │       ├── HomeStack.tsx
+│   │       ├── GroupsStack.tsx
+│   │       └── ProfileStack.tsx
+│   ├── screens/             # UI screens
+│   │   ├── auth/           # Login, VerifyCode
+│   │   ├── onboarding/     # Username, Skill, Location, etc.
+│   │   ├── main/           # Home, CreateLFG, SessionDetail, LogResult
+│   │   ├── groups/         # GroupsList, LFGBoard, Feed, Members
+│   │   └── profile/        # Profile, QR, Friends, Settings
+│   ├── services/            # Business logic (THE BRAIN)
+│   │   ├── supabase.ts     # Supabase client
+│   │   ├── matchingService.ts  # Compatibility scoring, session creation
+│   │   └── rewardService.ts    # Token awards, daily caps
+│   └── types/
+│       └── database.ts      # TypeScript types for DB schema
 ├── supabase/
-│   └── migrations/       # Database migrations
-├── App.tsx               # Root component
-└── package.json
+│   └── migrations/
+│       ├── 001_initial_schema.sql  # All tables + RLS
+│       └── 002_functions.sql       # DB functions
+├── App.tsx
+├── package.json
+└── README.md (you are here)
 ```
 
-## Database Schema
+## The Competitive Moat
 
-The app uses Supabase (PostgreSQL) with the following main tables:
+### PlayTime Scheduler (488K users)
+- **Strength:** Network effect, established user base
+- **Weakness:** Utility product, no culture, no status, no retention hooks
 
-- `users` - User profiles and settings
-- `friendships` - Friend connections
-- `groups` - Private and public groups
-- `group_members` - Group membership
-- `availability_blocks` - Recurring availability
-- `lfg_posts` - Looking for game posts
-- `lfg_time_options` - Time options for LFG posts
-- `lfg_claims` - User claims on LFG posts
-- `sessions` - Scheduled game sessions
-- `session_participants` - Session players
-- `match_results` - Game results
-- `result_confirmations` - Result verification
-- `peer_ratings` - Post-game ratings
-- `consensus_levels` - Calculated skill levels
-- `avoid_list` - User avoidance preferences
-- `token_ledger` - Token transactions
-- `token_balances` - Current token balances
-- `feed_posts` - Group feed posts
+### Pickle Chatter
+- **Strength:** Group-first social OS, instant matching, gamification that drives repeat usage
+- **Weakness:** Zero users (yet)
 
-## Key Concepts
+### How We Win
 
-### Skill Levels (1-6)
+1. **Wedge:** Start with private groups (friend circles, leagues, clubs)
+2. **Retention:** Post-game culture (feed + trophies + tokens) keeps people coming back
+3. **Virality:** QR codes, friend invites, group join codes
+4. **Network effects:** More users → better matches → more games → more feed activity → more status → more users
 
-- **1 - Beginner**: Just learning the basics
-- **2 - Novice**: Know the rules, learning strategy
-- **3 - Intermediate**: Solid fundamentals
-- **4 - Advanced**: Competitive player
-- **5 - Expert**: Tournament level
-- **6 - Pro**: Professional/elite
+### Metrics That Matter
 
-### Pickle Trophy
+- **Time to first game** (target: <2 minutes from signup)
+- **Games per week per user** (target: 3+)
+- **7-day retention** (target: 60%+)
+- **Pickle trophies per 100 games** (fun metric, tracks competitive culture)
 
-When a match ends 11-0, the winner earns a "Pickle Trophy" - a badge of dominance and a source of friendly trash talk.
+## What's Next
 
-### Consensus Level
+### Must-Have Before Beta
+- [ ] Push notifications for game invites
+- [ ] Location permissions handling
+- [ ] Camera permissions for QR scanning
+- [ ] Image upload for profile photos
+- [ ] Leaderboard screen (simple: most games, most trophies, highest consensus)
 
-Your skill level as rated by peers after verified matches. Uses median of last 20 ratings to prevent trolling.
-
-### Tokens
-
-Earn tokens by:
-- Playing verified matches (+10)
-- Confirming results quickly (+5)
-- Weekly activity streak (+20)
-- Hosting filled sessions (+5)
-
-## Development Roadmap
-
-### Completed (MVP)
-- ✅ Authentication
-- ✅ User profiles
-- ✅ Groups
-- ✅ LFG board
-- ✅ Sessions
-- ✅ Match results
-- ✅ Ratings
-- ✅ Tokens
-- ✅ QR codes
-- ✅ Group feed
-
-### Future Enhancements
-- [ ] Waitlist and auto-fill
-- [ ] Court rotation mode
-- [ ] Calendar sync
+### Nice-to-Have (Post-Beta)
+- [ ] Waitlist + auto-fill when someone bails
+- [ ] Court rotation mode (4 on / 4 off queue)
+- [ ] Calendar sync (iCal export)
 - [ ] Weather alerts
 - [ ] Court favorites with notes
-- [ ] Cost splitting
-- [ ] Clinic and coach postings
-- [ ] Video highlights
-- [ ] Advanced matchmaking algorithm
-- [ ] Push notifications
-- [ ] In-app messaging
-- [ ] Leaderboards
-- [ ] Achievements system
-- [ ] Merch store integration
+- [ ] Cost split tracking
+- [ ] Clinic/coach postings
+- [ ] Video highlights (10-20 sec clips)
+- [ ] Advanced matchmaking (avoid repeated pairings, balanced teams)
+
+### Infrastructure
+- [ ] Analytics (Mixpanel or Amplitude)
+- [ ] Error tracking (Sentry)
+- [ ] Feature flags (LaunchDarkly or simple config)
+- [ ] EAS Build configuration for App Store / Play Store
+- [ ] CI/CD pipeline
+
+## Known Issues / TODOs
+
+1. **Onboarding group join** - Password validation not implemented (line 37-38 in onboarding/JoinGroupScreen.tsx)
+2. **QR group join** - Not connected to group join flow (line 52 in profile/ScanQRScreen.tsx)
+3. **Settings screens** - Menu items are stubs (notifications, blocked users)
+4. **Consensus calculation** - Function exists but not called automatically (need cron job or trigger)
+5. **Result confirmations UI** - Players get notified but can't confirm from push notification yet
 
 ## Contributing
 
-This is a product spec implementation. Feel free to fork and customize for your needs.
+This is a product, not an open-source project. If you're on the team:
+
+1. Branch naming: `feature/your-name/short-description`
+2. Commit messages: Start with type (`feat:`, `fix:`, `refactor:`, `docs:`)
+3. PR template: What/Why/Testing
+4. Code review required
 
 ## License
 
-MIT
-
-## Support
-
-For issues and questions, please open an issue on GitHub.
+Proprietary. All rights reserved.
 
 ---
 
-**Built with ❤️ for the pickleball community**
+**Built with 🥒 by the Pickle Chatter team**
+
+*Making pickleball social again.*

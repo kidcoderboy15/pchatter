@@ -31,6 +31,7 @@ export type HomeStackParamList = {
   HomeScreen: undefined;
   CreateLFG: { groupId: string };
   SessionDetail: { sessionId: string };
+  LogResult: { sessionId: string };
 };
 
 export type GroupsStackParamList = {
@@ -40,6 +41,7 @@ export type GroupsStackParamList = {
   JoinGroup: undefined;
   GroupFeed: { groupId: string };
   GroupMembers: { groupId: string };
+  LFGBoard: { groupId: string };
 };
 
 export type ProfileStackParamList = {

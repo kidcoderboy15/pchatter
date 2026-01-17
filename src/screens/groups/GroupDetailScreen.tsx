@@ -74,7 +74,10 @@ export default function GroupDetailScreen({ navigation, route }: GroupDetailScre
           <Text style={styles.menuItemText}>Members</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={() => navigation.navigate('LFGBoard', { groupId })}
+        >
           <Text style={styles.menuItemText}>LFG Board</Text>
         </TouchableOpacity>
 

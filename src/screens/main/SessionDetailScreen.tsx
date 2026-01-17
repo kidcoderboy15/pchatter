@@ -111,11 +111,12 @@ export default function SessionDetailScreen({ navigation, route }: SessionDetail
         <Text style={styles.buttonText}>Check In</Text>
       </TouchableOpacity>
 
-      {session.status === 'completed' && (
-        <TouchableOpacity style={styles.secondaryButton}>
-          <Text style={styles.secondaryButtonText}>Log Result</Text>
-        </TouchableOpacity>
-      )}
+      <TouchableOpacity
+        style={styles.secondaryButton}
+        onPress={() => navigation.navigate('LogResult', { sessionId })}
+      >
+        <Text style={styles.secondaryButtonText}>Log Result</Text>
+      </TouchableOpacity>
     </ScrollView>
   );
 }

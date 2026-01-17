@@ -5,6 +5,7 @@ import { HomeStackParamList } from '../types';
 import HomeScreen from '../../screens/main/HomeScreen';
 import CreateLFGScreen from '../../screens/main/CreateLFGScreen';
 import SessionDetailScreen from '../../screens/main/SessionDetailScreen';
+import LogResultScreen from '../../screens/main/LogResultScreen';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
@@ -25,6 +26,11 @@ export default function HomeStack() {
         name="SessionDetail"
         component={SessionDetailScreen}
         options={{ title: 'Session' }}
+      />
+      <Stack.Screen
+        name="LogResult"
+        component={LogResultScreen}
+        options={{ title: 'Log Result' }}
       />
     </Stack.Navigator>
   );
