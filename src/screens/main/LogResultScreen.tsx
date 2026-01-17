@@ -5,6 +5,8 @@ import { RouteProp } from '@react-navigation/native';
 import { HomeStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { rewardService } from '../../services/rewardService';
+import { viralService } from '../../services/viralService';
+import AchievementCard from '../../components/AchievementCard';
 
 type LogResultScreenProps = {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'LogResult'>;
@@ -19,6 +21,10 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
   const [playerAces, setPlayerAces] = useState<Record<string, number>>({});
   const [hadATP, setHadATP] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [showAchievement, setShowAchievement] = useState<{
+    type: 'pickle' | 'atp';
+    userName: string;
+  } | null>(null);
 
   useEffect(() => {
     loadSession();
@@ -49,14 +55,27 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
     }
   };
 
-  const updatePlayerAces = (userId: string, delta: number) => {
+  const updatePlayerAces = async (userId: string, delta: number) => {
+    await viralService.haptic('light');
     setPlayerAces(prev => ({
       ...prev,
       [userId]: Math.max(0, (prev[userId] || 0) + delta),
     }));
   };
 
+  const quickScore = async (t1: number, t2: number) => {
+    await viralService.haptic('medium');
+    setTeam1Score(t1.toString());
+    setTeam2Score(t2.toString());
+  };
+
+  const toggleATP = async () => {
+    await viralService.haptic('light');
+    setHadATP(!hadATP);
+  };
+
   const handleSubmit = async () => {
+    await viralService.haptic('heavy');
     const score1 = parseInt(team1Score);
     const score2 = parseInt(team2Score);
 
@@ -173,6 +192,19 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
             ref_type: 'match_result',
             ref_id: result.id,
           });
+
+        // Show achievement card and celebrate
+        await viralService.celebrate('pickle');
+        const { data: userData } = await supabase
+          .from('users')
+          .select('username')
+          .eq('id', user.id)
+          .single();
+
+        setShowAchievement({
+          type: 'pickle',
+          userName: userData?.username || 'Player',
+        });
       }
 
       // ATP feed post if applicable
@@ -187,6 +219,21 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
             ref_type: 'match_result',
             ref_id: result.id,
           });
+
+        // Show ATP achievement if no pickle (pickle takes precedence)
+        if (!isPickle) {
+          await viralService.celebrate('atp');
+          const { data: userData } = await supabase
+            .from('users')
+            .select('username')
+            .eq('id', user.id)
+            .single();
+
+          setShowAchievement({
+            type: 'atp',
+            userName: userData?.username || 'Player',
+          });
+        }
       }
 
       // Ace feed post if applicable
@@ -239,13 +286,15 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
           });
       }
 
-      // Navigate to rate players screen
-      navigation.replace('RatePlayers', {
-        sessionId,
-        resultId: result.id,
-        isPickle,
-        hadATP,
-      });
+      // If showing achievement, don't navigate yet (user will dismiss to navigate)
+      if (!showAchievement) {
+        navigation.replace('RatePlayers', {
+          sessionId,
+          resultId: result.id,
+          isPickle,
+          hadATP,
+        });
+      }
     } catch (error: any) {
       console.error('Error logging result:', error);
       Alert.alert('Error', error.message || 'Failed to log result');
@@ -254,9 +303,41 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
     }
   };
 
-  const quickScore = (t1: number, t2: number) => {
-    setTeam1Score(t1.toString());
-    setTeam2Score(t2.toString());
+  const handleAchievementShare = async () => {
+    if (!showAchievement) return;
+
+    const shared = await viralService.shareAchievement(
+      showAchievement.type,
+      { userName: showAchievement.userName }
+    );
+
+    if (shared) {
+      handleAchievementDismiss();
+    }
+  };
+
+  const handleAchievementDismiss = () => {
+    const achievement = showAchievement;
+    setShowAchievement(null);
+
+    // Navigate after dismissing achievement
+    const { data: result } = supabase
+      .from('match_results')
+      .select('id')
+      .eq('session_id', sessionId)
+      .order('created_at', { ascending: false })
+      .limit(1)
+      .single()
+      .then(({ data }) => {
+        if (data) {
+          navigation.replace('RatePlayers', {
+            sessionId,
+            resultId: data.id,
+            isPickle: achievement?.type === 'pickle',
+            hadATP,
+          });
+        }
+      });
   };
 
   if (!session) {
@@ -384,7 +465,7 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
       {/* ATP checkbox */}
       <TouchableOpacity
         style={styles.atpCheckbox}
-        onPress={() => setHadATP(!hadATP)}
+        onPress={toggleATP}
       >
         <View style={[styles.checkbox, hadATP && styles.checkboxChecked]}>
           {hadATP && <Text style={styles.checkmark}>✓</Text>}
@@ -411,6 +492,16 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
       <Text style={styles.hint}>
         {hadATP ? 'ATP shots require confirmation from the other team' : 'Other players will be asked to confirm this result'}
       </Text>
+
+      {/* Achievement card overlay */}
+      {showAchievement && (
+        <AchievementCard
+          type={showAchievement.type}
+          userName={showAchievement.userName}
+          onShare={handleAchievementShare}
+          onDismiss={handleAchievementDismiss}
+        />
+      )}
     </ScrollView>
   );
 }

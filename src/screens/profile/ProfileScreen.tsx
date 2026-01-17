@@ -4,6 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { User } from '../../types/database';
+import { viralService } from '../../services/viralService';
 
 type ProfileScreenProps = {
   navigation: NativeStackNavigationProp<ProfileStackParamList, 'ProfileScreen'>;
@@ -45,6 +46,15 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
     ]);
   };
 
+  const handleInviteFriends = async () => {
+    await viralService.haptic('light');
+    const shared = await viralService.shareInvite(user.username);
+    if (shared) {
+      await viralService.haptic('success');
+      // Could award tokens for successful share if you want viral growth
+    }
+  };
+
   if (!user) {
     return (
       <View style={styles.container}>
@@ -83,6 +93,13 @@ export default function ProfileScreen({ navigation }: ProfileScreenProps) {
       </View>
 
       <View style={styles.section}>
+        <TouchableOpacity
+          style={[styles.menuItem, styles.inviteButton]}
+          onPress={handleInviteFriends}
+        >
+          <Text style={[styles.menuItemText, styles.inviteButtonText]}>📤 Invite Friends to Pickle Chatter</Text>
+        </TouchableOpacity>
+
         <TouchableOpacity
           style={styles.menuItem}
           onPress={() => navigation.navigate('MyQR')}
@@ -196,5 +213,13 @@ const styles = StyleSheet.create({
   },
   dangerText: {
     color: '#ef4444',
+  },
+  inviteButton: {
+    backgroundColor: '#22c55e',
+    borderBottomWidth: 0,
+  },
+  inviteButtonText: {
+    color: '#fff',
+    fontWeight: '700',
   },
 });

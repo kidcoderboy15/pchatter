@@ -4,6 +4,7 @@ import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { HomeStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { Session, LFGPost } from '../../types/database';
+import { viralService } from '../../services/viralService';
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'HomeScreen'>;
@@ -63,7 +64,20 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Upcoming Sessions</Text>
               {upcomingSessions.length === 0 ? (
-                <Text style={styles.emptyText}>No upcoming sessions</Text>
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyEmoji}>🎾</Text>
+                  <Text style={styles.emptyTitle}>No upcoming games</Text>
+                  <Text style={styles.emptySubtitle}>Find players and get on the court!</Text>
+                  <TouchableOpacity
+                    style={styles.emptyCTA}
+                    onPress={async () => {
+                      await viralService.haptic('medium');
+                      navigation.navigate('CreateLFG', { groupId: '' });
+                    }}
+                  >
+                    <Text style={styles.emptyCTAText}>🏓 Find a Game</Text>
+                  </TouchableOpacity>
+                </View>
               ) : (
                 upcomingSessions.map((session) => (
                   <TouchableOpacity
@@ -84,7 +98,11 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Looking for Game</Text>
               {lfgSuggestions.length === 0 ? (
-                <Text style={styles.emptyText}>No active LFG posts nearby</Text>
+                <View style={styles.emptyState}>
+                  <Text style={styles.emptyEmoji}>👀</Text>
+                  <Text style={styles.emptyTitle}>No active games nearby</Text>
+                  <Text style={styles.emptySubtitle}>Be the first to organize a game!</Text>
+                </View>
               ) : (
                 lfgSuggestions.map((lfg) => (
                   <TouchableOpacity key={lfg.id} style={styles.card}>
@@ -106,7 +124,13 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
       />
 
-      <TouchableOpacity style={styles.fab} onPress={() => navigation.navigate('CreateLFG', { groupId: '' })}>
+      <TouchableOpacity
+        style={styles.fab}
+        onPress={async () => {
+          await viralService.haptic('medium');
+          navigation.navigate('CreateLFG', { groupId: '' });
+        }}
+      >
         <Text style={styles.fabText}>+</Text>
       </TouchableOpacity>
     </View>
@@ -131,6 +155,43 @@ const styles = StyleSheet.create({
     fontSize: 14,
     textAlign: 'center',
     paddingVertical: 32,
+  },
+  emptyState: {
+    alignItems: 'center',
+    paddingVertical: 40,
+    paddingHorizontal: 20,
+  },
+  emptyEmoji: {
+    fontSize: 48,
+    marginBottom: 12,
+  },
+  emptyTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#111827',
+    marginBottom: 8,
+  },
+  emptySubtitle: {
+    fontSize: 14,
+    color: '#6b7280',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  emptyCTA: {
+    backgroundColor: '#22c55e',
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    borderRadius: 10,
+    shadowColor: '#22c55e',
+    shadowOffset: { width: 0, height: 3 },
+    shadowOpacity: 0.3,
+    shadowRadius: 6,
+    elevation: 3,
+  },
+  emptyCTAText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
   },
   card: {
     backgroundColor: '#fff',

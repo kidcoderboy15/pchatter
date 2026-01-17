@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { GroupsStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { matchingService } from '../../services/matchingService';
+import { viralService } from '../../services/viralService';
 
 type LFGBoardScreenProps = {
   navigation: NativeStackNavigationProp<GroupsStackParamList, 'LFGBoard'>;
@@ -156,9 +157,11 @@ export default function LFGBoardScreen({ navigation, route }: LFGBoardScreenProp
 
       // Check if full - create session if so
       if (newSlotsFilled >= (post?.slots_total || 4)) {
+        await viralService.haptic('success');
         await matchingService.createSessionFromLFG(postId);
         Alert.alert('Game On! 🎾', 'Session created! Check your upcoming games.');
       } else {
+        await viralService.haptic('medium');
         Alert.alert('Joined! 🎾', `You're in! ${(post?.slots_total || 4) - newSlotsFilled} spots left.`);
       }
 
@@ -253,10 +256,26 @@ export default function LFGBoardScreen({ navigation, route }: LFGBoardScreenProp
         keyExtractor={(item) => item.id}
         renderItem={renderPost}
         ListEmptyComponent={
-          <View style={styles.empty}>
-            <Text style={styles.emptyText}>No games available</Text>
-            <Text style={styles.emptySubtext}>Be the first to post!</Text>
-          </View>
+          !loading ? (
+            <View style={styles.empty}>
+              <Text style={styles.emptyEmoji}>🎾</Text>
+              <Text style={styles.emptyText}>No games yet</Text>
+              <Text style={styles.emptySubtext}>
+                {filter === 'all'
+                  ? 'Be the first to organize a game!'
+                  : 'Try a different time filter or create a new game'}
+              </Text>
+              <TouchableOpacity
+                style={styles.emptyButton}
+                onPress={async () => {
+                  await viralService.haptic('medium');
+                  navigation.navigate('CreateLFG', { groupId });
+                }}
+              >
+                <Text style={styles.emptyButtonText}>📅 Create New Game</Text>
+              </TouchableOpacity>
+            </View>
+          ) : null
         }
         refreshControl={
           <RefreshControl refreshing={refreshing} onRefresh={() => { setRefreshing(true); loadPosts(); }} />
@@ -402,16 +421,40 @@ const styles = StyleSheet.create({
   },
   empty: {
     paddingVertical: 64,
+    paddingHorizontal: 32,
     alignItems: 'center',
   },
+  emptyEmoji: {
+    fontSize: 64,
+    marginBottom: 16,
+  },
   emptyText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: '#374151',
+    fontSize: 20,
+    fontWeight: '700',
+    color: '#111827',
     marginBottom: 8,
   },
   emptySubtext: {
     fontSize: 14,
     color: '#6b7280',
+    textAlign: 'center',
+    marginBottom: 24,
+    lineHeight: 20,
+  },
+  emptyButton: {
+    backgroundColor: '#22c55e',
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 12,
+    shadowColor: '#22c55e',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 4,
+  },
+  emptyButtonText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: '700',
   },
 });

@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { HomeStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { rewardService } from '../../services/rewardService';
+import { viralService } from '../../services/viralService';
 
 type RatePlayersScreenProps = {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'RatePlayers'>;
@@ -73,7 +74,8 @@ export default function RatePlayersScreen({ navigation, route }: RatePlayersScre
     }
   };
 
-  const setSkillRating = (userId: string, level: number) => {
+  const setSkillRating = async (userId: string, level: number) => {
+    await viralService.haptic('light');
     setRatings(prev => ({
       ...prev,
       [userId]: {
@@ -83,7 +85,8 @@ export default function RatePlayersScreen({ navigation, route }: RatePlayersScre
     }));
   };
 
-  const setSportsmanshipRating = (userId: string, level: number) => {
+  const setSportsmanshipRating = async (userId: string, level: number) => {
+    await viralService.haptic('light');
     setRatings(prev => ({
       ...prev,
       [userId]: {
@@ -124,6 +127,9 @@ export default function RatePlayersScreen({ navigation, route }: RatePlayersScre
 
       // Award quick confirm bonus if within 1 hour
       await rewardService.awardConfirmationTokens(user.id, resultId);
+
+      // Celebrate with haptic
+      await viralService.haptic('success');
 
       // Show success message
       const celebrationMessage = isPickle
