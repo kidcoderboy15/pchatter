@@ -16,6 +16,8 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
   const [session, setSession] = useState<any>(null);
   const [team1Score, setTeam1Score] = useState('');
   const [team2Score, setTeam2Score] = useState('');
+  const [team1Aces, setTeam1Aces] = useState(0);
+  const [team2Aces, setTeam2Aces] = useState(0);
   const [hadATP, setHadATP] = useState(false);
   const [loading, setLoading] = useState(false);
 
@@ -77,6 +79,8 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
           created_by: user.id,
           team1_score: score1,
           team2_score: score2,
+          team1_aces: team1Aces,
+          team2_aces: team2Aces,
           is_pickle: isPickle,
           had_atp: hadATP,
           verified: false, // Needs confirmations (especially if ATP)
@@ -159,15 +163,40 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
           });
       }
 
+      // Ace feed post if applicable
+      const totalAces = team1Aces + team2Aces;
+      if (totalAces > 0) {
+        let aceContent = '';
+        if (totalAces >= 5) {
+          aceContent = `🔥 ACE FEST! ${totalAces} aces served! Absolutely dominant!`;
+        } else if (totalAces >= 3) {
+          aceContent = `⚡ ${totalAces} aces! Serving heat!`;
+        } else {
+          aceContent = `🎾 ${totalAces} ace${totalAces > 1 ? 's' : ''} served!`;
+        }
+
+        await supabase
+          .from('feed_posts')
+          .insert({
+            group_id: session.group_id,
+            user_id: user.id,
+            type: 'aces',
+            content: aceContent,
+            ref_type: 'match_result',
+            ref_id: result.id,
+          });
+      }
+
       // Regular result feed post (if not pickle, or in addition to pickle)
       if (!isPickle) {
+        const aceText = totalAces > 0 ? ` 🎾 (${totalAces} ace${totalAces > 1 ? 's' : ''})` : '';
         await supabase
           .from('feed_posts')
           .insert({
             group_id: session.group_id,
             user_id: user.id,
             type: 'match_result',
-            content: `Game finished: ${score1}-${score2}${hadATP ? ' 🎯 (ATP!)' : ''}`,
+            content: `Game finished: ${score1}-${score2}${hadATP ? ' 🎯 (ATP!)' : ''}${aceText}`,
             ref_type: 'match_result',
             ref_id: result.id,
           });
@@ -253,6 +282,50 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
             placeholder="0"
             maxLength={2}
           />
+        </View>
+      </View>
+
+      {/* Ace counters */}
+      <View style={styles.aceCounters}>
+        <Text style={styles.aceCountersLabel}>Aces Served (Optional)</Text>
+        <View style={styles.aceCounterRow}>
+          <View style={styles.aceCounter}>
+            <Text style={styles.aceCounterLabel}>Team 1</Text>
+            <View style={styles.counterButtons}>
+              <TouchableOpacity
+                style={styles.counterButton}
+                onPress={() => setTeam1Aces(Math.max(0, team1Aces - 1))}
+              >
+                <Text style={styles.counterButtonText}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.counterValue}>{team1Aces}</Text>
+              <TouchableOpacity
+                style={styles.counterButton}
+                onPress={() => setTeam1Aces(team1Aces + 1)}
+              >
+                <Text style={styles.counterButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          <View style={styles.aceCounter}>
+            <Text style={styles.aceCounterLabel}>Team 2</Text>
+            <View style={styles.counterButtons}>
+              <TouchableOpacity
+                style={styles.counterButton}
+                onPress={() => setTeam2Aces(Math.max(0, team2Aces - 1))}
+              >
+                <Text style={styles.counterButtonText}>-</Text>
+              </TouchableOpacity>
+              <Text style={styles.counterValue}>{team2Aces}</Text>
+              <TouchableOpacity
+                style={styles.counterButton}
+                onPress={() => setTeam2Aces(team2Aces + 1)}
+              >
+                <Text style={styles.counterButtonText}>+</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
         </View>
       </View>
 
@@ -397,6 +470,60 @@ const styles = StyleSheet.create({
     fontSize: 36,
     fontWeight: 'bold',
     color: '#d1d5db',
+  },
+  aceCounters: {
+    padding: 20,
+    paddingTop: 10,
+    borderTopWidth: 1,
+    borderTopColor: '#e5e7eb',
+  },
+  aceCountersLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 12,
+    color: '#6b7280',
+  },
+  aceCounterRow: {
+    flexDirection: 'row',
+    gap: 20,
+  },
+  aceCounter: {
+    flex: 1,
+  },
+  aceCounterLabel: {
+    fontSize: 12,
+    fontWeight: '600',
+    color: '#6b7280',
+    marginBottom: 8,
+    textAlign: 'center',
+  },
+  counterButtons: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 16,
+  },
+  counterButton: {
+    width: 40,
+    height: 40,
+    backgroundColor: '#f3f4f6',
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
+    borderWidth: 1,
+    borderColor: '#d1d5db',
+  },
+  counterButtonText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#374151',
+  },
+  counterValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#22c55e',
+    minWidth: 40,
+    textAlign: 'center',
   },
   quickScores: {
     padding: 20,
