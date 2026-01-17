@@ -16,6 +16,7 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
   const [session, setSession] = useState<any>(null);
   const [team1Score, setTeam1Score] = useState('');
   const [team2Score, setTeam2Score] = useState('');
+  const [hadATP, setHadATP] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -77,7 +78,8 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
           team1_score: score1,
           team2_score: score2,
           is_pickle: isPickle,
-          verified: false, // Needs confirmations
+          had_atp: hadATP,
+          verified: false, // Needs confirmations (especially if ATP)
         })
         .select()
         .single();
@@ -141,41 +143,43 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
             ref_type: 'match_result',
             ref_id: result.id,
           });
+      }
 
-        Alert.alert(
-          '🥒 PICKLE TROPHY! 🥒',
-          '11-0 shutout! Absolutely ruthless!',
-          [
-            {
-              text: 'Hell Yeah!',
-              onPress: () => navigation.goBack(),
-            },
-          ]
-        );
-      } else {
-        // Regular result feed post
+      // ATP feed post if applicable
+      if (hadATP) {
+        await supabase
+          .from('feed_posts')
+          .insert({
+            group_id: session.group_id,
+            user_id: user.id,
+            type: 'atp_shot',
+            content: `🎯 ATP SHOT! Around the post!${isPickle ? ' AND a pickle! 🥒' : ''}`,
+            ref_type: 'match_result',
+            ref_id: result.id,
+          });
+      }
+
+      // Regular result feed post (if not pickle, or in addition to pickle)
+      if (!isPickle) {
         await supabase
           .from('feed_posts')
           .insert({
             group_id: session.group_id,
             user_id: user.id,
             type: 'match_result',
-            content: `Game finished: ${score1}-${score2}`,
+            content: `Game finished: ${score1}-${score2}${hadATP ? ' 🎯 (ATP!)' : ''}`,
             ref_type: 'match_result',
             ref_id: result.id,
           });
-
-        Alert.alert(
-          'Result Logged! 🎾',
-          'Other players will be notified to confirm',
-          [
-            {
-              text: 'Done',
-              onPress: () => navigation.goBack(),
-            },
-          ]
-        );
       }
+
+      // Navigate to rate players screen
+      navigation.replace('RatePlayers', {
+        sessionId,
+        resultId: result.id,
+        isPickle,
+        hadATP,
+      });
     } catch (error: any) {
       console.error('Error logging result:', error);
       Alert.alert('Error', error.message || 'Failed to log result');
@@ -285,6 +289,22 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
         </View>
       </View>
 
+      {/* ATP checkbox */}
+      <TouchableOpacity
+        style={styles.atpCheckbox}
+        onPress={() => setHadATP(!hadATP)}
+      >
+        <View style={[styles.checkbox, hadATP && styles.checkboxChecked]}>
+          {hadATP && <Text style={styles.checkmark}>✓</Text>}
+        </View>
+        <View style={styles.atpLabelContainer}>
+          <Text style={styles.atpLabel}>🎯 ATP Shot (Around The Post)</Text>
+          <Text style={styles.atpSubtext}>
+            Epic shot! Requires extra confirmation from other team
+          </Text>
+        </View>
+      </TouchableOpacity>
+
       {/* Submit */}
       <TouchableOpacity
         style={[styles.submitButton, loading && styles.submitButtonDisabled]}
@@ -297,7 +317,7 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
       </TouchableOpacity>
 
       <Text style={styles.hint}>
-        Other players will be asked to confirm this result
+        {hadATP ? 'ATP shots require confirmation from the other team' : 'Other players will be asked to confirm this result'}
       </Text>
     </ScrollView>
   );
@@ -404,6 +424,45 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: '600',
     color: '#374151',
+  },
+  atpCheckbox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    paddingTop: 0,
+    gap: 12,
+  },
+  checkbox: {
+    width: 28,
+    height: 28,
+    borderWidth: 2,
+    borderColor: '#d1d5db',
+    borderRadius: 6,
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#fff',
+  },
+  checkboxChecked: {
+    backgroundColor: '#22c55e',
+    borderColor: '#22c55e',
+  },
+  checkmark: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  atpLabelContainer: {
+    flex: 1,
+  },
+  atpLabel: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#374151',
+    marginBottom: 2,
+  },
+  atpSubtext: {
+    fontSize: 12,
+    color: '#6b7280',
   },
   submitButton: {
     margin: 20,

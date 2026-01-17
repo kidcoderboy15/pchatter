@@ -32,6 +32,7 @@ export type HomeStackParamList = {
   CreateLFG: { groupId: string };
   SessionDetail: { sessionId: string };
   LogResult: { sessionId: string };
+  RatePlayers: { sessionId: string; resultId: string; isPickle: boolean; hadATP: boolean };
 };
 
 export type GroupsStackParamList = {
