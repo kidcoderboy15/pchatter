@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="2048" height="2732" viewBox="0 0 2048 2732" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="2048" height="2732" fill="#ffffff"/>
+  
+  <!-- Top decorative arc -->
+  <path d="M 0 0 Q 1024 400 2048 0 L 2048 0 L 0 0 Z" fill="#22c55e" opacity="0.1"/>
+  
+  <!-- Bottom decorative arc -->
+  <path d="M 0 2732 Q 1024 2332 2048 2732 L 2048 2732 L 0 2732 Z" fill="#22c55e" opacity="0.1"/>
+  
+  <!-- Main icon group -->
+  <g id="main-icon" transform="translate(1024, 1000)">
+    <!-- Paddle -->
+    <g id="paddle">
+      <!-- Paddle face -->
+      <ellipse cx="-100" cy="-150" rx="200" ry="260" fill="#22c55e" stroke="#111827" stroke-width="12"/>
+      
+      <!-- Inner paddle face -->
+      <ellipse cx="-100" cy="-150" rx="180" ry="240" fill="#ffffff" stroke="#111827" stroke-width="8"/>
+      
+      <!-- Paddle holes pattern -->
+      <circle cx="-100" cy="-260" r="18" fill="#22c55e"/>
+      <circle cx="-160" cy="-220" r="18" fill="#22c55e"/>
+      <circle cx="-40" cy="-220" r="18" fill="#22c55e"/>
+      
+      <circle cx="-180" cy="-160" r="18" fill="#22c55e"/>
+      <circle cx="-100" cy="-160" r="18" fill="#22c55e"/>
+      <circle cx="-20" cy="-160" r="18" fill="#22c55e"/>
+      
+      <circle cx="-160" cy="-100" r="18" fill="#22c55e"/>
+      <circle cx="-40" cy="-100" r="18" fill="#22c55e"/>
+      
+      <circle cx="-180" cy="-40" r="18" fill="#22c55e"/>
+      <circle cx="-100" cy="-40" r="18" fill="#22c55e"/>
+      <circle cx="-20" cy="-40" r="18" fill="#22c55e"/>
+      
+      <!-- Paddle handle -->
+      <rect x="-80" y="90" width="120" height="220" rx="12" fill="#111827"/>
+      <rect x="-65" y="100" width="90" height="200" rx="10" fill="#374151"/>
+      
+      <!-- Grip details -->
+      <line x1="-65" y1="125" x2="25" y2="125" stroke="#22c55e" stroke-width="3" opacity="0.6"/>
+      <line x1="-65" y1="150" x2="25" y2="150" stroke="#22c55e" stroke-width="3" opacity="0.6"/>
+      <line x1="-65" y1="175" x2="25" y2="175" stroke="#22c55e" stroke-width="3" opacity="0.6"/>
+      <line x1="-65" y1="200" x2="25" y2="200" stroke="#22c55e" stroke-width="3" opacity="0.6"/>
+      <line x1="-65" y1="225" x2="25" y2="225" stroke="#22c55e" stroke-width="3" opacity="0.6"/>
+      <line x1="-65" y1="250" x2="25" y2="250" stroke="#22c55e" stroke-width="3" opacity="0.6"/>
+      <line x1="-65" y1="275" x2="25" y2="275" stroke="#22c55e" stroke-width="3" opacity="0.6"/>
+    </g>
+    
+    <!-- Pickleball -->
+    <g id="ball" transform="translate(180, -200)">
+      <!-- Ball shadow -->
+      <ellipse cx="6" cy="6" rx="95" ry="95" fill="#000000" opacity="0.1"/>
+      
+      <!-- Ball -->
+      <circle cx="0" cy="0" r="95" fill="#fef08a" stroke="#111827" stroke-width="10"/>
+      
+      <!-- Ball holes -->
+      <circle cx="0" cy="-45" r="14" fill="#111827"/>
+      <circle cx="39" cy="-22" r="14" fill="#111827"/>
+      <circle cx="39" cy="22" r="14" fill="#111827"/>
+      <circle cx="0" cy="45" r="14" fill="#111827"/>
+      <circle cx="-39" cy="22" r="14" fill="#111827"/>
+      <circle cx="-39" cy="-22" r="14" fill="#111827"/>
+      <circle cx="0" cy="0" r="14" fill="#111827"/>
+    </g>
+    
+    <!-- Motion lines -->
+    <g id="motion" opacity="0.2">
+      <path d="M 100 -250 Q 60 -280 20 -310" stroke="#22c55e" stroke-width="12" stroke-linecap="round" fill="none"/>
+      <path d="M 130 -220 Q 90 -250 50 -280" stroke="#22c55e" stroke-width="10" stroke-linecap="round" fill="none"/>
+      <path d="M 160 -190 Q 120 -220 80 -250" stroke="#22c55e" stroke-width="8" stroke-linecap="round" fill="none"/>
+    </g>
+  </g>
+  
+  <!-- App name -->
+  <text x="1024" y="1650" font-family="system-ui, -apple-system, sans-serif" font-size="140" font-weight="800" fill="#111827" text-anchor="middle">
+    PICKLE CHATTER
+  </text>
+  
+  <!-- Tagline -->
+  <text x="1024" y="1760" font-family="system-ui, -apple-system, sans-serif" font-size="60" font-weight="400" fill="#6b7280" text-anchor="middle">
+    Your Pickleball Community
+  </text>
+  
+  <!-- Decorative pickleball icons (small) -->
+  <g opacity="0.15">
+    <!-- Top left -->
+    <circle cx="200" cy="400" r="40" fill="#22c55e"/>
+    <circle cx="200" cy="380" r="6" fill="#ffffff"/>
+    <circle cx="217" cy="390" r="6" fill="#ffffff"/>
+    <circle cx="217" cy="410" r="6" fill="#ffffff"/>
+    <circle cx="200" cy="420" r="6" fill="#ffffff"/>
+    
+    <!-- Top right -->
+    <circle cx="1848" cy="500" r="35" fill="#22c55e"/>
+    <circle cx="1848" cy="483" r="5" fill="#ffffff"/>
+    <circle cx="1863" cy="493" r="5" fill="#ffffff"/>
+    <circle cx="1848" cy="517" r="5" fill="#ffffff"/>
+    
+    <!-- Bottom left -->
+    <circle cx="300" cy="2300" r="45" fill="#22c55e"/>
+    <circle cx="300" cy="2278" r="7" fill="#ffffff"/>
+    <circle cx="319" cy="2289" r="7" fill="#ffffff"/>
+    <circle cx="300" cy="2322" r="7" fill="#ffffff"/>
+    
+    <!-- Bottom right -->
+    <circle cx="1750" cy="2200" r="38" fill="#22c55e"/>
+    <circle cx="1750" cy="2181" r="6" fill="#ffffff"/>
+    <circle cx="1766" cy="2191" r="6" fill="#ffffff"/>
+    <circle cx="1750" cy="2219" r="6" fill="#ffffff"/>
+  </g>
+</svg>
