@@ -5,6 +5,7 @@ import { HomeStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { Session, LFGPost } from '../../types/database';
 import { viralService } from '../../services/viralService';
+import { rewardService } from '../../services/rewardService';
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'HomeScreen'>;
@@ -19,6 +20,10 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+
+      // Award daily login bonus
+      await rewardService.awardDailyLogin(user.id);
+      await rewardService.checkLoginStreak(user.id);
 
       // Load upcoming sessions
       const { data: sessions } = await supabase

@@ -8,6 +8,7 @@ import ScanQRScreen from '../../screens/profile/ScanQRScreen';
 import MyQRScreen from '../../screens/profile/MyQRScreen';
 import FriendsScreen from '../../screens/profile/FriendsScreen';
 import SettingsScreen from '../../screens/profile/SettingsScreen';
+import MerchStoreScreen from '../../screens/profile/MerchStoreScreen';
 
 const Stack = createNativeStackNavigator<ProfileStackParamList>();
 
@@ -43,6 +44,11 @@ export default function ProfileStack() {
         name="Settings"
         component={SettingsScreen}
         options={{ title: 'Settings' }}
+      />
+      <Stack.Screen
+        name="MerchStore"
+        component={MerchStoreScreen}
+        options={{ title: 'Merch Store' }}
       />
     </Stack.Navigator>
   );

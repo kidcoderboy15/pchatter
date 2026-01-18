@@ -52,4 +52,5 @@ export type ProfileStackParamList = {
   MyQR: undefined;
   Friends: undefined;
   Settings: undefined;
+  MerchStore: undefined;
 };

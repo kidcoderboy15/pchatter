@@ -132,6 +132,17 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
 
           // Update user's lifetime total
           await supabase.rpc('update_user_total_aces', { p_user_id: userId });
+
+          // Check for ace milestones and award tokens
+          const { data: userData } = await supabase
+            .from('users')
+            .select('total_aces')
+            .eq('id', userId)
+            .single();
+
+          if (userData) {
+            await rewardService.checkAceMilestones(userId, userData.total_aces);
+          }
         }
       }
 
