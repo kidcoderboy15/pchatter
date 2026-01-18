@@ -43,6 +43,9 @@ export type GroupsStackParamList = {
   GroupFeed: { groupId: string };
   GroupMembers: { groupId: string };
   LFGBoard: { groupId: string };
+  GroupAvailability: { groupId: string };
+  EditGroupAvailability: { groupId: string };
+  GroupLeaderboard: { groupId: string };
 };
 
 export type ProfileStackParamList = {

@@ -9,6 +9,8 @@ import JoinGroupScreen from '../../screens/groups/JoinGroupScreen';
 import GroupFeedScreen from '../../screens/groups/GroupFeedScreen';
 import GroupMembersScreen from '../../screens/groups/GroupMembersScreen';
 import LFGBoardScreen from '../../screens/groups/LFGBoardScreen';
+import GroupAvailabilityScreen from '../../screens/groups/GroupAvailabilityScreen';
+import GroupLeaderboardScreen from '../../screens/groups/GroupLeaderboardScreen';
 
 const Stack = createNativeStackNavigator<GroupsStackParamList>();
 
@@ -49,6 +51,21 @@ export default function GroupsStack() {
         name="LFGBoard"
         component={LFGBoardScreen}
         options={{ title: 'Looking For Game' }}
+      />
+      <Stack.Screen
+        name="GroupAvailability"
+        component={GroupAvailabilityScreen}
+        options={{ title: 'Group Availability' }}
+      />
+      <Stack.Screen
+        name="GroupLeaderboard"
+        component={GroupLeaderboardScreen}
+        options={{ title: 'Leaderboard' }}
+      />
+      <Stack.Screen
+        name="EditGroupAvailability"
+        component={GroupAvailabilityScreen}
+        options={{ title: 'Edit Availability' }}
       />
     </Stack.Navigator>
   );

@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { OnboardingStackParamList } from '../../navigation/types';
+import { supabase } from '../../services/supabase';
 
 type AvailabilityScreenProps = {
   navigation: NativeStackNavigationProp<OnboardingStackParamList, 'Availability'>;
@@ -10,8 +11,23 @@ type AvailabilityScreenProps = {
 const DAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 const TIME_BLOCKS = ['Morning', 'Afternoon', 'Evening'];
 
+// Convert time block to actual time ranges
+const getTimeRange = (block: string): { start: string; end: string } => {
+  switch (block) {
+    case 'Morning':
+      return { start: '06:00:00', end: '12:00:00' };
+    case 'Afternoon':
+      return { start: '12:00:00', end: '18:00:00' };
+    case 'Evening':
+      return { start: '18:00:00', end: '22:00:00' };
+    default:
+      return { start: '09:00:00', end: '17:00:00' };
+  }
+};
+
 export default function AvailabilityScreen({ navigation }: AvailabilityScreenProps) {
   const [availability, setAvailability] = useState<Set<string>>(new Set());
+  const [loading, setLoading] = useState(false);
 
   const toggleAvailability = (day: number, block: string) => {
     const key = `${day}-${block}`;
@@ -24,8 +40,49 @@ export default function AvailabilityScreen({ navigation }: AvailabilityScreenPro
     setAvailability(newAvailability);
   };
 
-  const handleContinue = () => {
-    navigation.navigate('JoinGroup');
+  const handleContinue = async () => {
+    if (availability.size === 0) {
+      // Skip if no availability selected
+      navigation.navigate('JoinGroup');
+      return;
+    }
+
+    setLoading(true);
+
+    try {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
+      // Convert availability set to database records
+      const availabilityBlocks = Array.from(availability).map((key) => {
+        const [dayStr, block] = key.split('-');
+        const dayOfWeek = parseInt(dayStr);
+        const { start, end } = getTimeRange(block);
+
+        return {
+          user_id: user.id,
+          day_of_week: dayOfWeek,
+          start_time_local: start,
+          end_time_local: end,
+          timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+          active: true,
+        };
+      });
+
+      const { error } = await supabase
+        .from('availability_blocks')
+        .insert(availabilityBlocks);
+
+      if (error) throw error;
+
+      navigation.navigate('JoinGroup');
+    } catch (error: any) {
+      console.error('Error saving availability:', error);
+      Alert.alert('Error', 'Failed to save availability. You can set it later.');
+      navigation.navigate('JoinGroup');
+    } finally {
+      setLoading(false);
+    }
   };
 
   return (
@@ -65,11 +122,21 @@ export default function AvailabilityScreen({ navigation }: AvailabilityScreenPro
         </View>
       </ScrollView>
 
-      <TouchableOpacity style={styles.button} onPress={handleContinue}>
-        <Text style={styles.buttonText}>Continue</Text>
+      <TouchableOpacity
+        style={[styles.button, loading && styles.buttonDisabled]}
+        onPress={handleContinue}
+        disabled={loading}
+      >
+        <Text style={styles.buttonText}>
+          {loading ? 'Saving...' : 'Continue'}
+        </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.skipButton} onPress={handleContinue}>
+      <TouchableOpacity
+        style={styles.skipButton}
+        onPress={() => navigation.navigate('JoinGroup')}
+        disabled={loading}
+      >
         <Text style={styles.skipText}>Skip for now</Text>
       </TouchableOpacity>
     </View>
@@ -138,6 +205,9 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 8,
     alignItems: 'center',
+  },
+  buttonDisabled: {
+    opacity: 0.5,
   },
   buttonText: {
     color: '#fff',

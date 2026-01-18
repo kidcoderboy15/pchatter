@@ -5,6 +5,7 @@ import { RouteProp } from '@react-navigation/native';
 import { GroupsStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { Group } from '../../types/database';
+import { viralService } from '../../services/viralService';
 
 type GroupDetailScreenProps = {
   navigation: NativeStackNavigationProp<GroupsStackParamList, 'GroupDetail'>;
@@ -62,27 +63,72 @@ export default function GroupDetailScreen({ navigation, route }: GroupDetailScre
       <View style={styles.section}>
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => navigation.navigate('GroupFeed', { groupId })}
+          onPress={async () => {
+            await viralService.haptic('light');
+            navigation.navigate('LFGBoard', { groupId });
+          }}
         >
-          <Text style={styles.menuItemText}>Feed & Activity</Text>
+          <Text style={styles.menuIcon}>🎾</Text>
+          <View style={styles.menuItemContent}>
+            <Text style={styles.menuItemText}>LFG Board</Text>
+            <Text style={styles.menuItemSubtext}>Find games in this group</Text>
+          </View>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => navigation.navigate('GroupMembers', { groupId })}
+          onPress={async () => {
+            await viralService.haptic('light');
+            navigation.navigate('GroupAvailability', { groupId });
+          }}
         >
-          <Text style={styles.menuItemText}>Members</Text>
+          <Text style={styles.menuIcon}>📅</Text>
+          <View style={styles.menuItemContent}>
+            <Text style={styles.menuItemText}>Group Availability</Text>
+            <Text style={styles.menuItemSubtext}>See when members are free</Text>
+          </View>
         </TouchableOpacity>
 
         <TouchableOpacity
           style={styles.menuItem}
-          onPress={() => navigation.navigate('LFGBoard', { groupId })}
+          onPress={async () => {
+            await viralService.haptic('light');
+            navigation.navigate('GroupLeaderboard', { groupId });
+          }}
         >
-          <Text style={styles.menuItemText}>LFG Board</Text>
+          <Text style={styles.menuIcon}>🏆</Text>
+          <View style={styles.menuItemContent}>
+            <Text style={styles.menuItemText}>Leaderboard</Text>
+            <Text style={styles.menuItemSubtext}>Top players & stats</Text>
+          </View>
         </TouchableOpacity>
 
-        <TouchableOpacity style={styles.menuItem}>
-          <Text style={styles.menuItemText}>Leaderboard</Text>
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={async () => {
+            await viralService.haptic('light');
+            navigation.navigate('GroupFeed', { groupId });
+          }}
+        >
+          <Text style={styles.menuIcon}>📰</Text>
+          <View style={styles.menuItemContent}>
+            <Text style={styles.menuItemText}>Feed & Activity</Text>
+            <Text style={styles.menuItemSubtext}>Recent group highlights</Text>
+          </View>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={styles.menuItem}
+          onPress={async () => {
+            await viralService.haptic('light');
+            navigation.navigate('GroupMembers', { groupId });
+          }}
+        >
+          <Text style={styles.menuIcon}>👥</Text>
+          <View style={styles.menuItemContent}>
+            <Text style={styles.menuItemText}>Members</Text>
+            <Text style={styles.menuItemSubtext}>{memberCount} people in this group</Text>
+          </View>
         </TouchableOpacity>
       </View>
     </ScrollView>
@@ -115,15 +161,38 @@ const styles = StyleSheet.create({
     fontWeight: '600',
   },
   section: {
-    padding: 20,
+    padding: 16,
   },
   menuItem: {
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e5e7eb',
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 10,
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 1,
+  },
+  menuIcon: {
+    fontSize: 28,
+    marginRight: 16,
+  },
+  menuItemContent: {
+    flex: 1,
   },
   menuItemText: {
     fontSize: 16,
-    color: '#374151',
+    fontWeight: '600',
+    color: '#111827',
+    marginBottom: 2,
+  },
+  menuItemSubtext: {
+    fontSize: 13,
+    color: '#6b7280',
   },
 });

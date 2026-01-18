@@ -297,6 +297,11 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
           });
       }
 
+      // Update group member stats for leaderboard
+      if (session.group_id) {
+        await supabase.rpc('update_group_member_stats', { p_session_id: sessionId });
+      }
+
       // If showing achievement, don't navigate yet (user will dismiss to navigate)
       if (!showAchievement) {
         navigation.replace('RatePlayers', {
