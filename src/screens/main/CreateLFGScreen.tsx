@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   StyleSheet,
   ScrollView,
-  Alert,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { HomeStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { PlayFormat } from '../../types/database';
+import { useToast } from '../../context/ToastContext';
 
 type CreateLFGScreenProps = {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'CreateLFG'>;
@@ -23,6 +23,7 @@ const FORMATS: PlayFormat[] = ['doubles', 'singles', 'either'];
 
 export default function CreateLFGScreen({ navigation, route }: CreateLFGScreenProps) {
   const { groupId } = route.params;
+  const { showToast } = useToast();
   const [format, setFormat] = useState<PlayFormat>('doubles');
   const [slotsTotal, setSlotsTotal] = useState('4');
   const [location, setLocation] = useState('');
@@ -32,7 +33,7 @@ export default function CreateLFGScreen({ navigation, route }: CreateLFGScreenPr
 
   const handleCreate = async () => {
     if (!location) {
-      Alert.alert('Error', 'Please enter a location');
+      showToast('Please enter a location', 'error');
       return;
     }
 
@@ -77,10 +78,10 @@ export default function CreateLFGScreen({ navigation, route }: CreateLFGScreenPr
         status: 'joined',
       });
 
-      Alert.alert('Success', 'LFG post created!');
+      showToast('LFG post created!', 'success');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to create LFG post');
+      showToast(error.message || 'Failed to create LFG post', 'error');
     } finally {
       setLoading(false);
     }
@@ -160,7 +161,8 @@ const styles = StyleSheet.create({
   },
   formatButton: {
     flex: 1,
-    padding: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     borderRadius: 8,
     borderWidth: 2,
     borderColor: '#e5e7eb',

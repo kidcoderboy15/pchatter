@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { GroupsStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import { viralService } from '../../services/viralService';
+import { useToast } from '../../context/ToastContext';
 
 type EditGroupAvailabilityScreenProps = {
   navigation: NativeStackNavigationProp<GroupsStackParamList, 'EditGroupAvailability'>;
@@ -29,6 +30,7 @@ const getTimeRange = (block: string): { start: string; end: string } => {
 
 export default function EditGroupAvailabilityScreen({ navigation, route }: EditGroupAvailabilityScreenProps) {
   const { groupId } = route.params;
+  const { showToast } = useToast();
   const [availability, setAvailability] = useState<Set<string>>(new Set());
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -125,16 +127,12 @@ export default function EditGroupAvailabilityScreen({ navigation, route }: EditG
       }
 
       await viralService.haptic('success');
-      Alert.alert('Saved!', 'Your availability has been updated', [
-        {
-          text: 'Done',
-          onPress: () => navigation.goBack(),
-        },
-      ]);
+      showToast('Availability updated!', 'success');
+      navigation.goBack();
     } catch (error: any) {
       console.error('Error saving availability:', error);
       await viralService.haptic('error');
-      Alert.alert('Error', 'Failed to save availability. Please try again.');
+      showToast('Failed to save availability. Please try again.', 'error');
     } finally {
       setSaving(false);
     }

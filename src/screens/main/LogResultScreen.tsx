@@ -674,7 +674,8 @@ const styles = StyleSheet.create({
   },
   quickScoreButton: {
     flex: 1,
-    padding: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     backgroundColor: '#f3f4f6',
     borderRadius: 8,
     alignItems: 'center',

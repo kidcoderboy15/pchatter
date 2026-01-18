@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, TouchableOpacity, StyleSheet, Alert, TextInput, ScrollView } from 'react-native';
+import { View, Text, FlatList, TouchableOpacity, StyleSheet, TextInput, ScrollView } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { ProfileStackParamList } from '../../navigation/types';
 import { rewardService, MERCH_COSTS } from '../../services/rewardService';
 import { viralService } from '../../services/viralService';
 import { supabase } from '../../services/supabase';
+import { useToast } from '../../context/ToastContext';
 
 type MerchStoreScreenProps = {
   navigation: NativeStackNavigationProp<ProfileStackParamList, 'MerchStore'>;
@@ -71,6 +72,7 @@ const MERCH_ITEMS: MerchItem[] = [
 ];
 
 export default function MerchStoreScreen({ navigation }: MerchStoreScreenProps) {
+  const { showToast } = useToast();
   const [balance, setBalance] = useState(0);
   const [selectedItem, setSelectedItem] = useState<MerchItem | null>(null);
   const [shippingName, setShippingName] = useState('');
@@ -106,7 +108,7 @@ export default function MerchStoreScreen({ navigation }: MerchStoreScreenProps) 
     if (!selectedItem) return;
 
     if (!shippingName || !shippingAddress || !shippingCity || !shippingState || !shippingZip) {
-      Alert.alert('Missing Info', 'Please fill out all shipping information');
+      showToast('Please fill out all shipping information', 'error');
       return;
     }
 
@@ -127,19 +129,13 @@ export default function MerchStoreScreen({ navigation }: MerchStoreScreenProps) 
 
     if (result.success) {
       await viralService.haptic('success');
-      Alert.alert('Success!', result.message, [
-        {
-          text: 'Done',
-          onPress: () => {
-            setSelectedItem(null);
-            loadBalance();
-            navigation.goBack();
-          },
-        },
-      ]);
+      showToast(result.message, 'success');
+      setSelectedItem(null);
+      loadBalance();
+      navigation.goBack();
     } else {
       await viralService.haptic('error');
-      Alert.alert('Error', result.message);
+      showToast(result.message, 'error');
     }
   };
 

@@ -259,8 +259,8 @@ const styles = StyleSheet.create({
     gap: 8,
   },
   tab: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingHorizontal: 20,
     borderRadius: 20,
     backgroundColor: '#f3f4f6',
     marginRight: 8,

@@ -367,7 +367,8 @@ const styles = StyleSheet.create({
   skipButton: {
     marginHorizontal: 20,
     marginBottom: 40,
-    padding: 12,
+    paddingVertical: 16,
+    paddingHorizontal: 20,
     alignItems: 'center',
   },
   skipButtonText: {

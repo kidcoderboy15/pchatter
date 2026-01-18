@@ -300,8 +300,8 @@ const styles = StyleSheet.create({
   },
   filterTab: {
     flex: 1,
-    paddingVertical: 8,
-    paddingHorizontal: 12,
+    paddingVertical: 14,
+    paddingHorizontal: 16,
     marginHorizontal: 4,
     borderRadius: 8,
     backgroundColor: '#f3f4f6',

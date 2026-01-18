@@ -1,22 +1,24 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { GroupsStackParamList } from '../../navigation/types';
 import { supabase } from '../../services/supabase';
 import * as Crypto from 'expo-crypto';
+import { useToast } from '../../context/ToastContext';
 
 type JoinGroupScreenProps = {
   navigation: NativeStackNavigationProp<GroupsStackParamList, 'JoinGroup'>;
 };
 
 export default function JoinGroupScreen({ navigation }: JoinGroupScreenProps) {
+  const { showToast } = useToast();
   const [joinCode, setJoinCode] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
 
   const handleJoin = async () => {
     if (!joinCode) {
-      Alert.alert('Error', 'Please enter a join code');
+      showToast('Please enter a join code', 'error');
       return;
     }
 
@@ -32,14 +34,14 @@ export default function JoinGroupScreen({ navigation }: JoinGroupScreenProps) {
         .single();
 
       if (error || !group) {
-        Alert.alert('Error', 'Invalid join code');
+        showToast('Invalid join code', 'error');
         setLoading(false);
         return;
       }
 
       if (group.password_hash) {
         if (!password) {
-          Alert.alert('Error', 'This group requires a password');
+          showToast('This group requires a password', 'error');
           setLoading(false);
           return;
         }
@@ -50,7 +52,7 @@ export default function JoinGroupScreen({ navigation }: JoinGroupScreenProps) {
         );
 
         if (passwordHash !== group.password_hash) {
-          Alert.alert('Error', 'Incorrect password');
+          showToast('Incorrect password', 'error');
           setLoading(false);
           return;
         }
@@ -64,10 +66,10 @@ export default function JoinGroupScreen({ navigation }: JoinGroupScreenProps) {
 
       if (memberError) throw memberError;
 
-      Alert.alert('Success', `Joined ${group.name}!`);
+      showToast(`Joined ${group.name}!`, 'success');
       navigation.goBack();
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to join group');
+      showToast(error.message || 'Failed to join group', 'error');
     } finally {
       setLoading(false);
     }
