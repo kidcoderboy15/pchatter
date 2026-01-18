@@ -28,13 +28,13 @@ const REWARDS = {
 
 // Merch redemption costs (users spend tokens here)
 const MERCH_COSTS = {
-  STICKER_PACK: 100,
-  TSHIRT: 500,
-  HOODIE: 1000,
-  PADDLE_COVER: 750,
-  HAT: 400,
-  WATER_BOTTLE: 300,
-  TOWEL: 250,
+  STICKER_PACK: 200,      // ~1 week active play
+  TOWEL: 500,             // ~2 weeks
+  WATER_BOTTLE: 600,      // ~2 weeks
+  HAT: 800,               // ~3 weeks
+  TSHIRT: 1200,           // ~1 month
+  PADDLE_COVER: 1800,     // ~2 months
+  HOODIE: 2500,           // ~2-3 months
 };
 
 class RewardService {
