@@ -10,6 +10,7 @@ import GroupFeedScreen from '../../screens/groups/GroupFeedScreen';
 import GroupMembersScreen from '../../screens/groups/GroupMembersScreen';
 import LFGBoardScreen from '../../screens/groups/LFGBoardScreen';
 import GroupAvailabilityScreen from '../../screens/groups/GroupAvailabilityScreen';
+import EditGroupAvailabilityScreen from '../../screens/groups/EditGroupAvailabilityScreen';
 import GroupLeaderboardScreen from '../../screens/groups/GroupLeaderboardScreen';
 
 const Stack = createNativeStackNavigator<GroupsStackParamList>();
@@ -64,7 +65,7 @@ export default function GroupsStack() {
       />
       <Stack.Screen
         name="EditGroupAvailability"
-        component={GroupAvailabilityScreen}
+        component={EditGroupAvailabilityScreen}
         options={{ title: 'Edit Availability' }}
       />
     </Stack.Navigator>
