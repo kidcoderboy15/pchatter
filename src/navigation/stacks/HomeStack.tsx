@@ -6,6 +6,7 @@ import HomeScreen from '../../screens/main/HomeScreen';
 import CreateLFGScreen from '../../screens/main/CreateLFGScreen';
 import SessionDetailScreen from '../../screens/main/SessionDetailScreen';
 import LogResultScreen from '../../screens/main/LogResultScreen';
+import ConfirmResultScreen from '../../screens/main/ConfirmResultScreen';
 import RatePlayersScreen from '../../screens/main/RatePlayersScreen';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
@@ -32,6 +33,11 @@ export default function HomeStack() {
         name="LogResult"
         component={LogResultScreen}
         options={{ title: 'Log Result' }}
+      />
+      <Stack.Screen
+        name="ConfirmResult"
+        component={ConfirmResultScreen}
+        options={{ title: 'Confirm Result' }}
       />
       <Stack.Screen
         name="RatePlayers"

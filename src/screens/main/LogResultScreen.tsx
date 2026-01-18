@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, Alert, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RouteProp } from '@react-navigation/native';
 import { HomeStackParamList } from '../../navigation/types';
@@ -7,6 +7,7 @@ import { supabase } from '../../services/supabase';
 import { rewardService } from '../../services/rewardService';
 import { viralService } from '../../services/viralService';
 import AchievementCard from '../../components/AchievementCard';
+import { useToast } from '../../context/ToastContext';
 
 type LogResultScreenProps = {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'LogResult'>;
@@ -15,10 +16,13 @@ type LogResultScreenProps = {
 
 export default function LogResultScreen({ navigation, route }: LogResultScreenProps) {
   const { sessionId } = route.params;
+  const { showToast } = useToast();
   const [session, setSession] = useState<any>(null);
   const [team1Score, setTeam1Score] = useState('');
   const [team2Score, setTeam2Score] = useState('');
   const [playerAces, setPlayerAces] = useState<Record<string, number>>({});
+  const [playerNastyNates, setPlayerNastyNates] = useState<Record<string, number>>({});
+  const [playerPegs, setPlayerPegs] = useState<Record<string, number>>({});
   const [hadATP, setHadATP] = useState(false);
   const [loading, setLoading] = useState(false);
   const [showAchievement, setShowAchievement] = useState<{
@@ -43,12 +47,18 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
 
       if (data) {
         setSession(data);
-        // Initialize ace counts for all players
+        // Initialize stats for all players
         const initialAces: Record<string, number> = {};
+        const initialNastyNates: Record<string, number> = {};
+        const initialPegs: Record<string, number> = {};
         data.session_participants?.forEach((p: any) => {
           initialAces[p.user_id] = 0;
+          initialNastyNates[p.user_id] = 0;
+          initialPegs[p.user_id] = 0;
         });
         setPlayerAces(initialAces);
+        setPlayerNastyNates(initialNastyNates);
+        setPlayerPegs(initialPegs);
       }
     } catch (error) {
       console.error('Error loading session:', error);
@@ -58,6 +68,22 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
   const updatePlayerAces = async (userId: string, delta: number) => {
     await viralService.haptic('light');
     setPlayerAces(prev => ({
+      ...prev,
+      [userId]: Math.max(0, (prev[userId] || 0) + delta),
+    }));
+  };
+
+  const updatePlayerNastyNates = async (userId: string, delta: number) => {
+    await viralService.haptic('light');
+    setPlayerNastyNates(prev => ({
+      ...prev,
+      [userId]: Math.max(0, (prev[userId] || 0) + delta),
+    }));
+  };
+
+  const updatePlayerPegs = async (userId: string, delta: number) => {
+    await viralService.haptic('light');
+    setPlayerPegs(prev => ({
       ...prev,
       [userId]: Math.max(0, (prev[userId] || 0) + delta),
     }));
@@ -81,17 +107,17 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
 
     // Validation
     if (isNaN(score1) || isNaN(score2)) {
-      Alert.alert('Error', 'Please enter valid scores');
+      showToast('Please enter valid scores', 'error');
       return;
     }
 
     if (score1 < 0 || score2 < 0) {
-      Alert.alert('Error', 'Scores must be positive');
+      showToast('Scores must be positive', 'error');
       return;
     }
 
     if (score1 === score2) {
-      Alert.alert('Error', 'Scores cannot be tied in pickleball');
+      showToast('Scores cannot be tied in pickleball', 'error');
       return;
     }
 
@@ -121,12 +147,36 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
 
       if (resultError) throw resultError;
 
-      // Update aces for each player in session_participants
-      for (const [userId, aceCount] of Object.entries(playerAces)) {
-        if (aceCount > 0) {
+      // Determine winning team
+      const winningTeam = score1 > score2 ? 1 : 2;
+
+      // Save per-player stats to game_results
+      for (const participant of session.session_participants) {
+        const userId = participant.user_id;
+        const team = participant.team;
+        const teamScore = team === 1 ? score1 : score2;
+        const aces = playerAces[userId] || 0;
+        const nastyNates = playerNastyNates[userId] || 0;
+        const pegs = playerPegs[userId] || 0;
+        const pickled = isPickle && team === winningTeam;
+
+        await supabase.from('game_results').insert({
+          session_id: sessionId,
+          user_id: userId,
+          match_result_id: result.id,
+          team,
+          score: teamScore,
+          aces,
+          nasty_nates: nastyNates,
+          pegs: pegs,
+          pickle_trophy: pickled,
+        });
+
+        // Update aces in session_participants for backward compatibility
+        if (aces > 0) {
           await supabase
             .from('session_participants')
-            .update({ aces_served: aceCount })
+            .update({ aces_served: aces })
             .eq('session_id', sessionId)
             .eq('user_id', userId);
 
@@ -313,7 +363,7 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
       }
     } catch (error: any) {
       console.error('Error logging result:', error);
-      Alert.alert('Error', error.message || 'Failed to log result');
+      showToast(error.message || 'Failed to log result', 'error');
     } finally {
       setLoading(false);
     }
@@ -419,27 +469,72 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
         </View>
       </View>
 
-      {/* Ace counters - per player */}
-      <View style={styles.aceCounters}>
-        <Text style={styles.aceCountersLabel}>Aces Served (Optional)</Text>
-        <Text style={styles.aceHint}>Track individual ace counts - builds your profile badge!</Text>
+      {/* Player Stats - Quick tap counters */}
+      <View style={styles.statsSection}>
+        <Text style={styles.statsSectionTitle}>Player Stats</Text>
+        <Text style={styles.statsHint}>Tap + to track individual achievements</Text>
+
         {session.session_participants?.map((participant: any) => (
-          <View key={participant.user_id} style={styles.playerAceRow}>
-            <Text style={styles.playerAceName}>{participant.users?.username}</Text>
-            <View style={styles.counterButtons}>
-              <TouchableOpacity
-                style={styles.counterButton}
-                onPress={() => updatePlayerAces(participant.user_id, -1)}
-              >
-                <Text style={styles.counterButtonText}>-</Text>
-              </TouchableOpacity>
-              <Text style={styles.counterValue}>{playerAces[participant.user_id] || 0}</Text>
-              <TouchableOpacity
-                style={styles.counterButton}
-                onPress={() => updatePlayerAces(participant.user_id, 1)}
-              >
-                <Text style={styles.counterButtonText}>+</Text>
-              </TouchableOpacity>
+          <View key={participant.user_id} style={styles.playerStatsCard}>
+            <Text style={styles.playerStatsName}>{participant.users?.username}</Text>
+
+            <View style={styles.statsRow}>
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>🎾 Aces</Text>
+                <View style={styles.counterButtons}>
+                  <TouchableOpacity
+                    style={styles.counterButton}
+                    onPress={() => updatePlayerAces(participant.user_id, -1)}
+                  >
+                    <Text style={styles.counterButtonText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.counterValue}>{playerAces[participant.user_id] || 0}</Text>
+                  <TouchableOpacity
+                    style={styles.counterButton}
+                    onPress={() => updatePlayerAces(participant.user_id, 1)}
+                  >
+                    <Text style={styles.counterButtonText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>🔥 Nasty Nates</Text>
+                <View style={styles.counterButtons}>
+                  <TouchableOpacity
+                    style={styles.counterButton}
+                    onPress={() => updatePlayerNastyNates(participant.user_id, -1)}
+                  >
+                    <Text style={styles.counterButtonText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.counterValue}>{playerNastyNates[participant.user_id] || 0}</Text>
+                  <TouchableOpacity
+                    style={styles.counterButton}
+                    onPress={() => updatePlayerNastyNates(participant.user_id, 1)}
+                  >
+                    <Text style={styles.counterButtonText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
+
+              <View style={styles.statItem}>
+                <Text style={styles.statLabel}>💥 Pegs</Text>
+                <View style={styles.counterButtons}>
+                  <TouchableOpacity
+                    style={styles.counterButton}
+                    onPress={() => updatePlayerPegs(participant.user_id, -1)}
+                  >
+                    <Text style={styles.counterButtonText}>-</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.counterValue}>{playerPegs[participant.user_id] || 0}</Text>
+                  <TouchableOpacity
+                    style={styles.counterButton}
+                    onPress={() => updatePlayerPegs(participant.user_id, 1)}
+                  >
+                    <Text style={styles.counterButtonText}>+</Text>
+                  </TouchableOpacity>
+                </View>
+              </View>
             </View>
           </View>
         ))}
@@ -597,37 +692,51 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     color: '#d1d5db',
   },
-  aceCounters: {
+  statsSection: {
     padding: 20,
     paddingTop: 10,
     borderTopWidth: 1,
     borderTopColor: '#e5e7eb',
   },
-  aceCountersLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    marginBottom: 8,
-    color: '#6b7280',
+  statsSectionTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    marginBottom: 4,
+    color: '#374151',
   },
-  aceHint: {
+  statsHint: {
     fontSize: 12,
     color: '#6b7280',
+    marginBottom: 16,
+  },
+  playerStatsCard: {
+    backgroundColor: '#f9fafb',
+    borderRadius: 12,
+    padding: 16,
     marginBottom: 12,
-    fontStyle: 'italic',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
   },
-  playerAceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingVertical: 8,
-    borderBottomWidth: 1,
-    borderBottomColor: '#f3f4f6',
-  },
-  playerAceName: {
+  playerStatsName: {
     fontSize: 14,
-    fontWeight: '600',
+    fontWeight: '700',
     color: '#374151',
+    marginBottom: 12,
+  },
+  statsRow: {
+    flexDirection: 'row',
+    gap: 12,
+  },
+  statItem: {
     flex: 1,
+    alignItems: 'center',
+  },
+  statLabel: {
+    fontSize: 11,
+    fontWeight: '600',
+    color: '#6b7280',
+    marginBottom: 8,
+    textAlign: 'center',
   },
   counterButtons: {
     flexDirection: 'row',
