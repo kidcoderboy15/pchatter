@@ -39,7 +39,7 @@ const MERCH_COSTS = {
 
 class RewardService {
   /**
-   * Award tokens to a user
+   * Award tokens to a user (uses database function for deduplication and daily cap)
    */
   async awardTokens(
     userId: string,
@@ -49,41 +49,29 @@ class RewardService {
     refId?: string
   ): Promise<boolean> {
     try {
-      // Check daily cap
-      const today = new Date();
-      today.setHours(0, 0, 0, 0);
+      // Call database function that handles deduplication and daily cap
+      const { data, error } = await supabase.rpc('award_tokens_safe', {
+        p_user_id: userId,
+        p_amount: amount,
+        p_reason: reason,
+        p_ref_type: refType || null,
+        p_ref_id: refId || null,
+      });
 
-      const { data: todayTokens } = await supabase
-        .from('token_ledger')
-        .select('delta')
-        .eq('user_id', userId)
-        .gte('created_at', today.toISOString());
-
-      const earnedToday = todayTokens?.reduce((sum, t) => sum + (t.delta > 0 ? t.delta : 0), 0) || 0;
-
-      if (earnedToday >= DAILY_EARN_CAP) {
-        console.log(`User ${userId} hit daily cap`);
+      if (error) {
+        console.error('Error awarding tokens:', error);
         return false;
       }
 
-      // Cap amount if it would exceed daily limit
-      const cappedAmount = Math.min(amount, DAILY_EARN_CAP - earnedToday);
-
-      // Add to ledger
-      const { error: ledgerError } = await supabase
-        .from('token_ledger')
-        .insert({
-          user_id: userId,
-          delta: cappedAmount,
-          reason,
-          ref_type: refType || null,
-          ref_id: refId || null,
-        });
-
-      if (ledgerError) throw ledgerError;
-
-      // Update balance
-      await this.updateBalance(userId);
+      // Check result
+      if (!data || !data.success) {
+        if (data?.reason === 'already_awarded' || data?.reason === 'duplicate') {
+          console.log(`Tokens already awarded for ${refType}:${refId}`);
+        } else if (data?.reason === 'daily_cap_exceeded') {
+          console.log(`User ${userId} hit daily cap`);
+        }
+        return false;
+      }
 
       return true;
     } catch (error) {

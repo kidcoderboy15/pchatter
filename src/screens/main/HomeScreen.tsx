@@ -6,15 +6,18 @@ import { supabase } from '../../services/supabase';
 import { Session, LFGPost } from '../../types/database';
 import { viralService } from '../../services/viralService';
 import { rewardService } from '../../services/rewardService';
+import { useToast } from '../../context/ToastContext';
 
 type HomeScreenProps = {
   navigation: NativeStackNavigationProp<HomeStackParamList, 'HomeScreen'>;
 };
 
 export default function HomeScreen({ navigation }: HomeScreenProps) {
+  const { showToast } = useToast();
   const [upcomingSessions, setUpcomingSessions] = useState<Session[]>([]);
   const [lfgSuggestions, setLFGSuggestions] = useState<LFGPost[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [userGroupId, setUserGroupId] = useState<string | null>(null);
 
   const loadData = async () => {
     try {
@@ -24,6 +27,17 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
       // Award daily login bonus
       await rewardService.awardDailyLogin(user.id);
       await rewardService.checkLoginStreak(user.id);
+
+      // Load user's first group for LFG creation
+      const { data: userGroups } = await supabase
+        .from('group_members')
+        .select('group_id')
+        .eq('user_id', user.id)
+        .limit(1);
+
+      if (userGroups && userGroups.length > 0) {
+        setUserGroupId(userGroups[0].group_id);
+      }
 
       // Load upcoming sessions
       const { data: sessions } = await supabase
@@ -48,6 +62,18 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
     } catch (error) {
       console.error('Error loading data:', error);
     }
+  };
+
+  const handleFindGame = async () => {
+    await viralService.haptic('medium');
+
+    if (!userGroupId) {
+      showToast('Join a group first to create games', 'info');
+      // TODO: Navigate to Groups tab when tab navigation is accessible
+      return;
+    }
+
+    navigation.navigate('CreateLFG', { groupId: userGroupId });
   };
 
   useEffect(() => {
@@ -75,10 +101,7 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
                   <Text style={styles.emptySubtitle}>Find players and get on the court!</Text>
                   <TouchableOpacity
                     style={styles.emptyCTA}
-                    onPress={async () => {
-                      await viralService.haptic('medium');
-                      navigation.navigate('CreateLFG', { groupId: '' });
-                    }}
+                    onPress={handleFindGame}
                   >
                     <Text style={styles.emptyCTAText}>🏓 Find a Game</Text>
                   </TouchableOpacity>

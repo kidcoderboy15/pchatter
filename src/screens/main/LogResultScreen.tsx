@@ -121,6 +121,20 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
       return;
     }
 
+    // Validate team composition
+    const team1Count = session.session_participants?.filter((p: any) => p.team === 1).length || 0;
+    const team2Count = session.session_participants?.filter((p: any) => p.team === 2).length || 0;
+
+    if (session.format === 'doubles' && (team1Count !== 2 || team2Count !== 2)) {
+      showToast('Doubles requires exactly 2 players per team', 'error');
+      return;
+    }
+
+    if (session.format === 'singles' && (team1Count !== 1 || team2Count !== 1)) {
+      showToast('Singles requires exactly 1 player per team', 'error');
+      return;
+    }
+
     // Check for pickle (11-0 shutout)
     const isPickle = (score1 === 11 && score2 === 0) || (score2 === 11 && score1 === 0);
 
@@ -129,6 +143,17 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
+
+      // Validate team composition with database function
+      const { data: validation } = await supabase.rpc('validate_session_teams', {
+        p_session_id: sessionId
+      });
+
+      if (validation && !validation.valid) {
+        showToast(validation.message || 'Invalid team composition', 'error');
+        setLoading(false);
+        return;
+      }
 
       // Create result
       const { data: result, error: resultError } = await supabase
