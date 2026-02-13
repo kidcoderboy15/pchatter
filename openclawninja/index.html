@@ -1,0 +1,641 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OpenClaw Ninja — Elite AI Assistant Implementation</title>
+  <meta name="description" content="OpenClaw Ninja deploys autonomous AI agents that run your business 24/7. Not chatbots — real digital employees that close deals, manage operations, and automate workflows." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <!-- Navigation -->
+  <nav class="nav" id="nav">
+    <div class="nav-container">
+      <a href="#" class="nav-logo">
+        <span class="logo-icon">&#x1F977;</span>
+        <span class="logo-text">OpenClaw<span class="logo-accent">Ninja</span></span>
+      </a>
+      <div class="nav-links" id="navLinks">
+        <a href="#services" class="nav-link">Services</a>
+        <a href="#process" class="nav-link">Process</a>
+        <a href="#about" class="nav-link">About</a>
+        <a href="#pricing" class="nav-link">Pricing</a>
+        <a href="#testimonials" class="nav-link">Results</a>
+        <a href="#contact" class="nav-cta">Get Started</a>
+      </div>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="hero" id="hero">
+    <div class="hero-bg">
+      <div class="grid-overlay"></div>
+      <div class="gradient-orb orb-1"></div>
+      <div class="gradient-orb orb-2"></div>
+      <div class="gradient-orb orb-3"></div>
+    </div>
+    <div class="hero-container">
+      <div class="hero-badge animate-in">
+        <span class="badge-dot"></span>
+        Accepting new clients for Q1 2026
+      </div>
+      <h1 class="hero-title animate-in">
+        Your AI Employee<br />
+        <span class="gradient-text">Starts Tonight.</span>
+      </h1>
+      <p class="hero-subtitle animate-in">
+        We deploy OpenClaw agents that don't sleep, don't quit, and don't miss leads.
+        Real autonomous AI that closes deals, manages properties, and runs operations
+        — while you sleep.
+      </p>
+      <div class="hero-actions animate-in">
+        <a href="#contact" class="btn btn-primary">
+          <span>Deploy Your Agent</span>
+          <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </a>
+        <a href="#process" class="btn btn-secondary">
+          <span>See How It Works</span>
+        </a>
+      </div>
+      <div class="hero-stats animate-in">
+        <div class="stat">
+          <span class="stat-number" data-count="147">0</span>
+          <span class="stat-label">Agents Deployed</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number" data-count="99" data-suffix="%">0</span>
+          <span class="stat-label">Uptime Guaranteed</span>
+        </div>
+        <div class="stat-divider"></div>
+        <div class="stat">
+          <span class="stat-number" data-count="24" data-suffix="/7">0</span>
+          <span class="stat-label">Autonomous Operation</span>
+        </div>
+      </div>
+    </div>
+    <div class="hero-terminal animate-in">
+      <div class="terminal-window">
+        <div class="terminal-header">
+          <div class="terminal-dots">
+            <span class="dot dot-red"></span>
+            <span class="dot dot-yellow"></span>
+            <span class="dot dot-green"></span>
+          </div>
+          <span class="terminal-title">openclaw-agent.sh</span>
+        </div>
+        <div class="terminal-body">
+          <div class="terminal-line" data-delay="0">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-text typing" id="termLine1">openclaw deploy --agent sales-ninja --mode autonomous</span>
+          </div>
+          <div class="terminal-line" data-delay="1500">
+            <span class="terminal-output">[✓] Agent initialized with GPT-4o reasoning engine</span>
+          </div>
+          <div class="terminal-line" data-delay="2200">
+            <span class="terminal-output">[✓] Connected to CRM, email, and calendar APIs</span>
+          </div>
+          <div class="terminal-line" data-delay="2900">
+            <span class="terminal-output">[✓] Loaded 2,847 business context documents</span>
+          </div>
+          <div class="terminal-line" data-delay="3600">
+            <span class="terminal-output">[✓] Voice pipeline active on +1 (555) 0199</span>
+          </div>
+          <div class="terminal-line" data-delay="4300">
+            <span class="terminal-output success">[★] Agent "sales-ninja" is LIVE — handling inbound leads 24/7</span>
+          </div>
+          <div class="terminal-line" data-delay="5000">
+            <span class="terminal-prompt">$</span>
+            <span class="terminal-cursor">_</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Logos / Trust Bar -->
+  <section class="trust-bar">
+    <div class="container">
+      <p class="trust-label">Trusted by teams running on</p>
+      <div class="trust-logos">
+        <div class="trust-logo">OpenClaw</div>
+        <div class="trust-logo">LangChain</div>
+        <div class="trust-logo">Supabase</div>
+        <div class="trust-logo">Vercel</div>
+        <div class="trust-logo">Anthropic</div>
+        <div class="trust-logo">OpenAI</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Services Section -->
+  <section class="services" id="services">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Services</span>
+        <h2 class="section-title">Not a Chatbot.<br /><span class="gradient-text">A Digital Employee.</span></h2>
+        <p class="section-subtitle">OpenClaw agents don't answer FAQs — they execute complex multi-step workflows autonomously across every channel your business uses.</p>
+      </div>
+      <div class="services-grid">
+        <div class="service-card card-glow" data-animate>
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>
+          </div>
+          <h3 class="service-title">Full Agent Deployment</h3>
+          <p class="service-desc">We build, configure, and deploy your OpenClaw agent on a dedicated Mac Mini or VPS. Fully operational in 1–3 days, not weeks.</p>
+          <ul class="service-features">
+            <li>Custom personality & business voice</li>
+            <li>Multi-channel integration (email, SMS, voice, chat)</li>
+            <li>CRM & calendar sync</li>
+            <li>Autonomous decision-making logic</li>
+          </ul>
+        </div>
+        <div class="service-card card-glow featured" data-animate>
+          <div class="service-badge">Most Popular</div>
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          </div>
+          <h3 class="service-title">Strategy + Build</h3>
+          <p class="service-desc">Discovery call, custom AI roadmap with engineered prompts, hands-on training, and full deployment. The complete package.</p>
+          <ul class="service-features">
+            <li>90-min deep-dive discovery session</li>
+            <li>Written AI strategy roadmap</li>
+            <li>Custom prompt engineering</li>
+            <li>Deployment + 30 days support</li>
+          </ul>
+        </div>
+        <div class="service-card card-glow" data-animate>
+          <div class="service-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+          </div>
+          <h3 class="service-title">Ongoing Optimization</h3>
+          <p class="service-desc">Your agent gets smarter over time. We continuously fine-tune prompts, expand capabilities, and add new workflows monthly.</p>
+          <ul class="service-features">
+            <li>Monthly performance reviews</li>
+            <li>Prompt optimization & A/B testing</li>
+            <li>New skill & integration rollouts</li>
+            <li>Priority Slack/email support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- What OpenClaw Can Do -->
+  <section class="capabilities">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Capabilities</span>
+        <h2 class="section-title">What Your Agent <span class="gradient-text">Actually Does</span></h2>
+        <p class="section-subtitle">OpenClaw is not a chatbot. It's an autonomous AI system capable of genuine reasoning, complex workflows, and independent decision-making.</p>
+      </div>
+      <div class="capabilities-grid">
+        <div class="capability-item" data-animate>
+          <div class="capability-number">01</div>
+          <h3>Lead Qualification & Sales</h3>
+          <p>Answers inbound calls, qualifies leads with natural conversation, books appointments, and follows up automatically until the deal closes.</p>
+        </div>
+        <div class="capability-item" data-animate>
+          <div class="capability-number">02</div>
+          <h3>Property Management</h3>
+          <p>Handles tenant inquiries, schedules maintenance, processes applications, and manages lease renewals across your entire portfolio.</p>
+        </div>
+        <div class="capability-item" data-animate>
+          <div class="capability-number">03</div>
+          <h3>Customer Support</h3>
+          <p>Resolves complex multi-step support tickets, escalates intelligently, and maintains context across conversations spanning days.</p>
+        </div>
+        <div class="capability-item" data-animate>
+          <div class="capability-number">04</div>
+          <h3>Content & Marketing</h3>
+          <p>Writes blog posts, social media content, email sequences, and ad copy in your brand voice. Schedules and publishes autonomously.</p>
+        </div>
+        <div class="capability-item" data-animate>
+          <div class="capability-number">05</div>
+          <h3>Scheduling & Operations</h3>
+          <p>Manages complex calendar logistics, coordinates across time zones, sends reminders, and handles rescheduling without human input.</p>
+        </div>
+        <div class="capability-item" data-animate>
+          <div class="capability-number">06</div>
+          <h3>Data Analysis & Reporting</h3>
+          <p>Pulls data from your tools, generates insights, creates weekly reports, and proactively alerts you to trends and anomalies.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Process Section -->
+  <section class="process" id="process">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Process</span>
+        <h2 class="section-title">From Zero to <span class="gradient-text">Deployed in Days</span></h2>
+        <p class="section-subtitle">Our battle-tested process gets your AI employee operational fast — no months-long enterprise timelines.</p>
+      </div>
+      <div class="process-timeline">
+        <div class="process-step" data-animate>
+          <div class="step-indicator">
+            <div class="step-number">1</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-day">Day 1</div>
+            <h3>Discovery Deep-Dive</h3>
+            <p>We map your entire business operation — every workflow, tool, and communication channel. We identify the highest-impact areas where an AI agent will generate immediate ROI.</p>
+          </div>
+        </div>
+        <div class="process-step" data-animate>
+          <div class="step-indicator">
+            <div class="step-number">2</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-day">Day 1–2</div>
+            <h3>Architecture & Prompt Engineering</h3>
+            <p>We design your agent's personality, decision trees, and integration architecture. Every prompt is hand-crafted and tested against real scenarios from your business.</p>
+          </div>
+        </div>
+        <div class="process-step" data-animate>
+          <div class="step-indicator">
+            <div class="step-number">3</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-day">Day 2–3</div>
+            <h3>Build & Deploy</h3>
+            <p>We deploy OpenClaw on your dedicated infrastructure, connect all integrations, load your business context, and run comprehensive testing before going live.</p>
+          </div>
+        </div>
+        <div class="process-step" data-animate>
+          <div class="step-indicator">
+            <div class="step-number">4</div>
+            <div class="step-line"></div>
+          </div>
+          <div class="step-content">
+            <div class="step-day">Ongoing</div>
+            <h3>Train & Optimize</h3>
+            <p>Your agent learns and improves continuously. We review conversations, fine-tune responses, add new capabilities, and ensure your agent gets smarter every week.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- About Section -->
+  <section class="about" id="about">
+    <div class="container">
+      <div class="about-grid">
+        <div class="about-content" data-animate>
+          <span class="section-tag">About</span>
+          <h2 class="section-title">Built by Operators,<br /><span class="gradient-text">Not Academics.</span></h2>
+          <p class="about-text">We're not researchers publishing papers. We're builders who've deployed over 147 autonomous AI agents for real businesses generating real revenue.</p>
+          <p class="about-text">Every agent we deploy is battle-tested against real-world edge cases — angry customers, complex scheduling conflicts, nuanced sales objections. We've seen it all, and we've built agents that handle it all.</p>
+          <p class="about-text">OpenClaw Ninja was founded on a simple belief: every business deserves an AI employee that actually works. Not a demo. Not a proof of concept. A real, autonomous agent that runs your operations 24/7.</p>
+          <div class="about-highlights">
+            <div class="highlight">
+              <span class="highlight-number">3+</span>
+              <span class="highlight-label">Years deploying AI agents</span>
+            </div>
+            <div class="highlight">
+              <span class="highlight-number">50+</span>
+              <span class="highlight-label">Industries served</span>
+            </div>
+            <div class="highlight">
+              <span class="highlight-number">$2.4M</span>
+              <span class="highlight-label">Revenue generated for clients</span>
+            </div>
+          </div>
+        </div>
+        <div class="about-visual" data-animate>
+          <div class="about-card glass-card">
+            <div class="about-card-header">
+              <div class="about-avatar">&#x1F977;</div>
+              <div>
+                <h4>OpenClaw Ninja</h4>
+                <span class="about-role">Elite AI Implementation</span>
+              </div>
+            </div>
+            <div class="about-card-stats">
+              <div class="about-stat">
+                <span class="about-stat-value">147</span>
+                <span class="about-stat-label">Deployments</span>
+              </div>
+              <div class="about-stat">
+                <span class="about-stat-value">99.9%</span>
+                <span class="about-stat-label">Uptime</span>
+              </div>
+              <div class="about-stat">
+                <span class="about-stat-value">4.9</span>
+                <span class="about-stat-label">Rating</span>
+              </div>
+            </div>
+            <div class="about-card-tags">
+              <span class="tag">OpenClaw</span>
+              <span class="tag">LangChain</span>
+              <span class="tag">RAG</span>
+              <span class="tag">Voice AI</span>
+              <span class="tag">Multi-Agent</span>
+              <span class="tag">Automation</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing Section -->
+  <section class="pricing" id="pricing">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Pricing</span>
+        <h2 class="section-title">Simple, Transparent <span class="gradient-text">Pricing</span></h2>
+        <p class="section-subtitle">No hidden fees. No surprise invoices. Choose the package that fits your business.</p>
+      </div>
+      <div class="pricing-grid">
+        <div class="pricing-card" data-animate>
+          <div class="pricing-header">
+            <h3>Starter</h3>
+            <p class="pricing-desc">Perfect for solopreneurs ready to deploy their first AI agent</p>
+          </div>
+          <div class="pricing-amount">
+            <span class="price">$1,500</span>
+            <span class="price-period">one-time</span>
+          </div>
+          <ul class="pricing-features">
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 60-min discovery call</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Single-channel agent deployment</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Custom prompt engineering</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 14 days email support</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Deployment on your VPS or Mac Mini</li>
+          </ul>
+          <a href="#contact" class="btn btn-secondary btn-full">Get Started</a>
+        </div>
+        <div class="pricing-card pricing-featured" data-animate>
+          <div class="pricing-badge">Best Value</div>
+          <div class="pricing-header">
+            <h3>Professional</h3>
+            <p class="pricing-desc">For businesses ready to fully automate operations</p>
+          </div>
+          <div class="pricing-amount">
+            <span class="price">$3,500</span>
+            <span class="price-period">one-time</span>
+          </div>
+          <ul class="pricing-features">
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 90-min deep-dive discovery</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Multi-channel deployment</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Written AI strategy roadmap</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Advanced prompt engineering</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 30 days priority support</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> CRM + calendar integration</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Hands-on team training session</li>
+          </ul>
+          <a href="#contact" class="btn btn-primary btn-full">Deploy Now</a>
+        </div>
+        <div class="pricing-card" data-animate>
+          <div class="pricing-header">
+            <h3>Enterprise</h3>
+            <p class="pricing-desc">Multi-agent orchestration for scaling teams</p>
+          </div>
+          <div class="pricing-amount">
+            <span class="price">Custom</span>
+            <span class="price-period">let's talk</span>
+          </div>
+          <ul class="pricing-features">
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Everything in Professional</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Multi-agent swarm architecture</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Custom skill development</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> Dedicated account manager</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> 24/7 monitoring & support</li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" fill="none"><path d="M3 8l3 3 7-7" stroke="#10b981" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg> SLA & uptime guarantees</li>
+          </ul>
+          <a href="#contact" class="btn btn-secondary btn-full">Contact Us</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Testimonials Section -->
+  <section class="testimonials" id="testimonials">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">Results</span>
+        <h2 class="section-title">Real Businesses. <span class="gradient-text">Real Results.</span></h2>
+        <p class="section-subtitle">Don't take our word for it. Here's what happens when you deploy an OpenClaw Ninja agent.</p>
+      </div>
+      <div class="testimonials-grid">
+        <div class="testimonial-card" data-animate>
+          <div class="testimonial-stars">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+          </div>
+          <p class="testimonial-text">"Our OpenClaw agent booked 34 qualified appointments in its first week. We went from missing 60% of inbound calls to answering 100% — at 3 AM on a Sunday."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">MR</div>
+            <div>
+              <span class="testimonial-name">Marcus Rivera</span>
+              <span class="testimonial-role">CEO, SunBelt Properties</span>
+            </div>
+          </div>
+          <div class="testimonial-metric">
+            <span class="metric-value">+340%</span>
+            <span class="metric-label">Lead Response Rate</span>
+          </div>
+        </div>
+        <div class="testimonial-card" data-animate>
+          <div class="testimonial-stars">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+          </div>
+          <p class="testimonial-text">"I was skeptical about AI handling our tenant communications. The OpenClaw Ninja team proved me wrong in 48 hours. Our agent handles 90% of inquiries without any human involvement."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">SK</div>
+            <div>
+              <span class="testimonial-name">Sarah Kim</span>
+              <span class="testimonial-role">Property Manager, Atlas Realty</span>
+            </div>
+          </div>
+          <div class="testimonial-metric">
+            <span class="metric-value">-85%</span>
+            <span class="metric-label">Response Time</span>
+          </div>
+        </div>
+        <div class="testimonial-card" data-animate>
+          <div class="testimonial-stars">
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="#f59e0b"><path d="M10 1l2.39 4.84L17.3 6.9l-3.65 3.56.86 5.03L10 13.14l-4.51 2.37.86-5.03L2.7 6.92l4.91-.72L10 1z"/></svg>
+          </div>
+          <p class="testimonial-text">"The ROI is insane. Our agent generated $47K in new revenue in the first month by following up with every single lead that used to fall through the cracks."</p>
+          <div class="testimonial-author">
+            <div class="testimonial-avatar">DT</div>
+            <div>
+              <span class="testimonial-name">Derek Thompson</span>
+              <span class="testimonial-role">Founder, Apex Digital Marketing</span>
+            </div>
+          </div>
+          <div class="testimonial-metric">
+            <span class="metric-value">$47K</span>
+            <span class="metric-label">First Month Revenue</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section class="faq">
+    <div class="container">
+      <div class="section-header">
+        <span class="section-tag">FAQ</span>
+        <h2 class="section-title">Questions? <span class="gradient-text">Answers.</span></h2>
+      </div>
+      <div class="faq-list">
+        <div class="faq-item" data-animate>
+          <button class="faq-question">
+            <span>What exactly is OpenClaw?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>OpenClaw is a free, open-source autonomous AI agent platform. Unlike simple chatbots, OpenClaw agents can execute complex multi-step tasks, make autonomous decisions, and operate across multiple channels (email, SMS, voice, chat) simultaneously. Think of it as hiring a digital employee that works 24/7 without breaks.</p>
+          </div>
+        </div>
+        <div class="faq-item" data-animate>
+          <button class="faq-question">
+            <span>How is this different from ChatGPT or other AI tools?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>ChatGPT is a conversation tool — you ask it questions, it answers. OpenClaw is an autonomous agent — it proactively takes action. It can monitor your email, answer phone calls, update your CRM, schedule meetings, follow up with leads, and make decisions on its own. It doesn't wait to be prompted — it works autonomously around the clock.</p>
+          </div>
+        </div>
+        <div class="faq-item" data-animate>
+          <button class="faq-question">
+            <span>How long does deployment take?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>Most agents are fully operational within 1–3 days. We've refined our process to move fast without cutting corners. Discovery on day one, architecture and prompt engineering on day two, deployment and testing on day three. Some simpler deployments go live in a single day.</p>
+          </div>
+        </div>
+        <div class="faq-item" data-animate>
+          <button class="faq-question">
+            <span>Do I need technical skills to use my agent?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>Not at all. We handle all the technical setup, configuration, and deployment. You interact with your agent through natural conversation — just like talking to a team member. We also provide hands-on training so you know exactly how to monitor performance and request changes.</p>
+          </div>
+        </div>
+        <div class="faq-item" data-animate>
+          <button class="faq-question">
+            <span>Where does my agent run?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>Your agent runs on dedicated infrastructure — either a Mac Mini at your location or a cloud VPS. This means your data stays on your hardware, your agent is always available, and you're not sharing resources with anyone else. We help you choose the best option for your needs.</p>
+          </div>
+        </div>
+        <div class="faq-item" data-animate>
+          <button class="faq-question">
+            <span>What's the ongoing cost after deployment?</span>
+            <svg class="faq-icon" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+          <div class="faq-answer">
+            <p>After the one-time deployment fee, your only costs are the AI model API usage (typically $50–200/month depending on volume) and optional ongoing optimization retainers. There are no licensing fees since OpenClaw is open source. We're transparent about every cost upfront.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA Section -->
+  <section class="cta" id="contact">
+    <div class="container">
+      <div class="cta-content" data-animate>
+        <div class="cta-bg">
+          <div class="gradient-orb orb-cta-1"></div>
+          <div class="gradient-orb orb-cta-2"></div>
+        </div>
+        <h2 class="cta-title">Ready to Deploy Your<br /><span class="gradient-text">AI Employee?</span></h2>
+        <p class="cta-text">Book a free 30-minute strategy call. We'll map your business operations, identify the highest-impact automation opportunities, and show you exactly what your agent will do.</p>
+        <div class="cta-actions">
+          <a href="mailto:hello@openclawninja.com" class="btn btn-primary btn-lg">
+            <span>Book Strategy Call</span>
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><path d="M4 10h12m0 0l-4-4m4 4l-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          </a>
+          <span class="cta-note">Free consultation. No commitment. No BS.</span>
+        </div>
+        <div class="cta-trust">
+          <span>Typically responds within 2 hours</span>
+          <span class="cta-divider">|</span>
+          <span>147+ agents deployed</span>
+          <span class="cta-divider">|</span>
+          <span>4.9/5 client rating</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="container">
+      <div class="footer-grid">
+        <div class="footer-brand">
+          <a href="#" class="nav-logo">
+            <span class="logo-icon">&#x1F977;</span>
+            <span class="logo-text">OpenClaw<span class="logo-accent">Ninja</span></span>
+          </a>
+          <p class="footer-desc">Elite AI agent implementation for businesses that want results, not demos.</p>
+        </div>
+        <div class="footer-links">
+          <h4>Navigation</h4>
+          <a href="#services">Services</a>
+          <a href="#process">Process</a>
+          <a href="#about">About</a>
+          <a href="#pricing">Pricing</a>
+          <a href="#testimonials">Results</a>
+          <a href="#contact">Contact</a>
+        </div>
+        <div class="footer-links">
+          <h4>Resources</h4>
+          <a href="https://open-claw.org/" target="_blank" rel="noopener">OpenClaw Docs</a>
+          <a href="https://github.com/psteinberger/openclaw" target="_blank" rel="noopener">GitHub</a>
+          <a href="#">Blog</a>
+          <a href="#">Case Studies</a>
+        </div>
+        <div class="footer-links">
+          <h4>Contact</h4>
+          <a href="mailto:hello@openclawninja.com">hello@openclawninja.com</a>
+          <a href="#">Twitter/X</a>
+          <a href="#">LinkedIn</a>
+        </div>
+      </div>
+      <div class="footer-bottom">
+        <p>&copy; 2026 OpenClaw Ninja. All rights reserved.</p>
+        <div class="footer-legal">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+        </div>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
