@@ -34,6 +34,8 @@ export type HomeStackParamList = {
   LogResult: { sessionId: string };
   ConfirmResult: { resultId: string };
   RatePlayers: { sessionId: string; resultId: string; isPickle: boolean; hadATP: boolean };
+  Availability: undefined;
+  AvailabilityMatches: { date: string; startTime: string; endTime: string };
 };
 
 export type GroupsStackParamList = {

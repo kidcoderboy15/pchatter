@@ -8,6 +8,8 @@ import SessionDetailScreen from '../../screens/main/SessionDetailScreen';
 import LogResultScreen from '../../screens/main/LogResultScreen';
 import ConfirmResultScreen from '../../screens/main/ConfirmResultScreen';
 import RatePlayersScreen from '../../screens/main/RatePlayersScreen';
+import { AvailabilityScreen } from '../../screens/main/AvailabilityScreen';
+import { AvailabilityMatchesScreen } from '../../screens/main/AvailabilityMatchesScreen';
 
 const Stack = createNativeStackNavigator<HomeStackParamList>();
 
@@ -43,6 +45,16 @@ export default function HomeStack() {
         name="RatePlayers"
         component={RatePlayersScreen}
         options={{ title: 'Rate Players' }}
+      />
+      <Stack.Screen
+        name="Availability"
+        component={AvailabilityScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="AvailabilityMatches"
+        component={AvailabilityMatchesScreen}
+        options={{ headerShown: false }}
       />
     </Stack.Navigator>
   );

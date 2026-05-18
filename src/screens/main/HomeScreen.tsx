@@ -92,6 +92,27 @@ export default function HomeScreen({ navigation }: HomeScreenProps) {
         data={[]}
         ListHeaderComponent={
           <>
+            <View style={styles.actionBar}>
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={handleFindGame}
+              >
+                <Text style={styles.actionButtonIcon}>🏓</Text>
+                <Text style={styles.actionButtonText}>Find a Game</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.actionButton}
+                onPress={async () => {
+                  await viralService.haptic('light');
+                  navigation.navigate('Availability');
+                }}
+              >
+                <Text style={styles.actionButtonIcon}>📅</Text>
+                <Text style={styles.actionButtonText}>My Week</Text>
+              </TouchableOpacity>
+            </View>
+
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Upcoming Sessions</Text>
               {upcomingSessions.length === 0 ? (
@@ -169,6 +190,31 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#f9fafb',
+  },
+  actionBar: {
+    flexDirection: 'row',
+    padding: 16,
+    gap: 12,
+  },
+  actionButton: {
+    flex: 1,
+    backgroundColor: '#fff',
+    padding: 16,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#e5e7eb',
+    minHeight: 88,
+    justifyContent: 'center',
+  },
+  actionButtonIcon: {
+    fontSize: 32,
+    marginBottom: 8,
+  },
+  actionButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#111827',
   },
   section: {
     padding: 20,
