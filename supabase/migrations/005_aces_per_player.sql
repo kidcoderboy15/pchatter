@@ -1,6 +1,9 @@
 -- Refactor ace tracking from team-based to player-based
 
--- First, remove team-based ace columns from match_results
+-- Drop the view first since it depends on the ace columns we're about to remove
+DROP VIEW IF EXISTS verified_results;
+
+-- Remove team-based ace columns from match_results
 ALTER TABLE match_results
 DROP COLUMN IF EXISTS team1_aces,
 DROP COLUMN IF EXISTS team2_aces;
@@ -17,9 +20,7 @@ ADD COLUMN total_aces INT DEFAULT 0 CHECK (total_aces >= 0);
 
 COMMENT ON COLUMN users.total_aces IS 'Lifetime total aces served across all sessions';
 
--- Update verified_results view (remove team aces since we removed those columns)
-DROP VIEW IF EXISTS verified_results;
-
+-- Recreate verified_results view (remove team aces since we removed those columns)
 CREATE OR REPLACE VIEW verified_results AS
 SELECT
   mr.id,
