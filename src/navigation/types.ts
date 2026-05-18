@@ -8,7 +8,6 @@ export type RootStackParamList = {
 
 export type AuthStackParamList = {
   Login: undefined;
-  VerifyCode: { phone?: string; email?: string };
 };
 
 export type OnboardingStackParamList = {

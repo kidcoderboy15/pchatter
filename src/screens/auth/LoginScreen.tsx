@@ -8,30 +8,42 @@ type LoginScreenProps = {
   navigation: NativeStackNavigationProp<AuthStackParamList, 'Login'>;
 };
 
-export default function LoginScreen({ navigation }: LoginScreenProps) {
+export default function LoginScreen({}: LoginScreenProps) {
   const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [useEmail, setUseEmail] = useState(true);
+  const [password, setPassword] = useState('');
+  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  const handleLogin = async () => {
+  const handleSubmit = async () => {
+    const trimmedEmail = email.trim();
+
+    if (!trimmedEmail || !password) {
+      Alert.alert('Error', 'Please enter your email and password');
+      return;
+    }
+    if (password.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
+      return;
+    }
+
     setLoading(true);
     try {
-      if (useEmail) {
-        const { error } = await supabase.auth.signInWithOtp({
-          email: email.trim(),
+      if (isSignUp) {
+        const { error } = await supabase.auth.signUp({
+          email: trimmedEmail,
+          password,
         });
         if (error) throw error;
-        navigation.navigate('VerifyCode', { email: email.trim() });
       } else {
-        const { error } = await supabase.auth.signInWithOtp({
-          phone: phone.trim(),
+        const { error } = await supabase.auth.signInWithPassword({
+          email: trimmedEmail,
+          password,
         });
         if (error) throw error;
-        navigation.navigate('VerifyCode', { phone: phone.trim() });
       }
+      // RootNavigator switches screens automatically once a session exists.
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to send verification code');
+      Alert.alert('Error', error.message || 'Something went wrong');
     } finally {
       setLoading(false);
     }
@@ -44,51 +56,52 @@ export default function LoginScreen({ navigation }: LoginScreenProps) {
 
       <View style={styles.tabContainer}>
         <TouchableOpacity
-          style={[styles.tab, useEmail && styles.activeTab]}
-          onPress={() => setUseEmail(true)}
+          style={[styles.tab, !isSignUp && styles.activeTab]}
+          onPress={() => setIsSignUp(false)}
         >
-          <Text style={[styles.tabText, useEmail && styles.activeTabText]}>Email</Text>
+          <Text style={[styles.tabText, !isSignUp && styles.activeTabText]}>Sign In</Text>
         </TouchableOpacity>
         <TouchableOpacity
-          style={[styles.tab, !useEmail && styles.activeTab]}
-          onPress={() => setUseEmail(false)}
+          style={[styles.tab, isSignUp && styles.activeTab]}
+          onPress={() => setIsSignUp(true)}
         >
-          <Text style={[styles.tabText, !useEmail && styles.activeTabText]}>Phone</Text>
+          <Text style={[styles.tabText, isSignUp && styles.activeTabText]}>Create Account</Text>
         </TouchableOpacity>
       </View>
 
-      {useEmail ? (
-        <TextInput
-          style={styles.input}
-          placeholder="Email address"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          autoCorrect={false}
-        />
-      ) : (
-        <TextInput
-          style={styles.input}
-          placeholder="Phone number"
-          value={phone}
-          onChangeText={setPhone}
-          keyboardType="phone-pad"
-        />
-      )}
+      <TextInput
+        style={styles.input}
+        placeholder="Email address"
+        value={email}
+        onChangeText={setEmail}
+        keyboardType="email-address"
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
+      <TextInput
+        style={styles.input}
+        placeholder="Password"
+        value={password}
+        onChangeText={setPassword}
+        secureTextEntry
+        autoCapitalize="none"
+        autoCorrect={false}
+      />
 
       <TouchableOpacity
         style={[styles.button, loading && styles.buttonDisabled]}
-        onPress={handleLogin}
+        onPress={handleSubmit}
         disabled={loading}
       >
         <Text style={styles.buttonText}>
-          {loading ? 'Sending...' : 'Send Code'}
+          {loading ? 'Please wait...' : isSignUp ? 'Create Account' : 'Sign In'}
         </Text>
       </TouchableOpacity>
 
       <Text style={styles.disclaimer}>
-        We'll send you a verification code to sign in
+        {isSignUp
+          ? 'Create an account with your email and a password (6+ characters)'
+          : 'Sign in with your email and password'}
       </Text>
     </View>
   );
