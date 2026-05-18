@@ -64,7 +64,6 @@
           "cameraPermission": "Allow Pickle Chatter to scan QR codes for adding friends and joining groups."
         }
       ],
-      "expo-haptics",
       [
         "expo-location",
         {
