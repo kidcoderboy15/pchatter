@@ -16,8 +16,9 @@ export default function VerifyCodeScreen({ navigation, route }: VerifyCodeScreen
   const [loading, setLoading] = useState(false);
 
   const handleVerify = async () => {
-    if (code.length !== 6) {
-      Alert.alert('Error', 'Please enter a 6-digit code');
+    const trimmedCode = code.trim();
+    if (trimmedCode.length < 6) {
+      Alert.alert('Error', 'Please enter the code from your email or text');
       return;
     }
 
@@ -25,8 +26,8 @@ export default function VerifyCodeScreen({ navigation, route }: VerifyCodeScreen
     try {
       const { error } = await supabase.auth.verifyOtp(
         email
-          ? { email, token: code, type: 'email' }
-          : { phone: phone as string, token: code, type: 'sms' }
+          ? { email, token: trimmedCode, type: 'email' }
+          : { phone: phone as string, token: trimmedCode, type: 'sms' }
       );
 
       if (error) throw error;
@@ -47,11 +48,11 @@ export default function VerifyCodeScreen({ navigation, route }: VerifyCodeScreen
 
       <TextInput
         style={styles.input}
-        placeholder="000000"
+        placeholder="Enter code"
         value={code}
         onChangeText={setCode}
         keyboardType="number-pad"
-        maxLength={6}
+        maxLength={10}
         textAlign="center"
       />
 
