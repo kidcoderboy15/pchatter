@@ -91,7 +91,12 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- Add validation to SECURITY DEFINER functions
 -- ============================================================================
 
--- Update increment_pickle_trophies to require session context
+-- Update increment_pickle_trophies to require session context.
+-- Drop the old single-argument version from migration 002 first: CREATE OR
+-- REPLACE cannot change a function's argument list, so without this DROP the
+-- old, unauthenticated version would survive as a separate overload.
+DROP FUNCTION IF EXISTS increment_pickle_trophies(UUID);
+
 CREATE OR REPLACE FUNCTION increment_pickle_trophies(
   p_user_id UUID,
   p_session_id UUID

@@ -262,10 +262,9 @@ CREATE POLICY "Group members can create feed posts" ON feed_posts
 -- ============================================================================
 ALTER TABLE group_member_stats ENABLE ROW LEVEL SECURITY;
 
-CREATE POLICY "Group members can view group stats" ON group_member_stats
-  FOR SELECT USING (
-    group_id IN (SELECT group_id FROM group_members WHERE user_id = auth.uid()::uuid)
-  );
+-- NOTE: the SELECT policy "Group members can view group stats" is already
+-- created in migration 007. Re-creating it here would fail with
+-- "policy already exists", so it is intentionally omitted.
 
 -- Only app (via SECURITY DEFINER function) can insert/update stats
 -- No direct INSERT/UPDATE policy for users

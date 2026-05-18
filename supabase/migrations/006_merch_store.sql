@@ -1,5 +1,8 @@
 -- Add merch store and enhanced token rewards
 
+-- gen_random_bytes() (used below for invite codes) lives in the pgcrypto extension
+CREATE EXTENSION IF NOT EXISTS pgcrypto;
+
 -- Create merch_orders table for token redemption
 CREATE TABLE IF NOT EXISTS merch_orders (
   id UUID PRIMARY KEY DEFAULT gen_random_uuid(),

@@ -89,13 +89,12 @@ RETURNS TABLE (
   user_id UUID,
   username TEXT,
   display_name TEXT,
-  avatar_url TEXT,
+  photo_url TEXT,
   available_date DATE,
   start_time TIME,
   end_time TIME,
   preferred_location TEXT,
-  notes TEXT,
-  atp_rating NUMERIC
+  notes TEXT
 ) AS $$
 BEGIN
   RETURN QUERY
@@ -104,13 +103,12 @@ BEGIN
     u.id as user_id,
     u.username,
     u.display_name,
-    u.avatar_url,
+    u.photo_url,
     ua.available_date,
     ua.start_time,
     ua.end_time,
     ua.preferred_location,
-    ua.notes,
-    u.atp_rating
+    ua.notes
   FROM user_availability ua
   JOIN users u ON ua.user_id = u.id
   WHERE ua.available_date = p_date
@@ -124,7 +122,7 @@ BEGIN
     AND ua.group_id IN (
       SELECT group_id FROM group_members WHERE user_id = p_user_id
     )
-  ORDER BY ua.start_time, u.atp_rating DESC NULLS LAST;
+  ORDER BY ua.start_time;
 END;
 $$ LANGUAGE plpgsql SECURITY DEFINER;
 
