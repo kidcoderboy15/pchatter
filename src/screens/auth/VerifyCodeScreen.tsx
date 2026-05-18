@@ -23,12 +23,11 @@ export default function VerifyCodeScreen({ navigation, route }: VerifyCodeScreen
 
     setLoading(true);
     try {
-      const { error } = await supabase.auth.verifyOtp({
-        email,
-        phone,
-        token: code,
-        type: email ? 'email' : 'sms',
-      });
+      const { error } = await supabase.auth.verifyOtp(
+        email
+          ? { email, token: code, type: 'email' }
+          : { phone: phone as string, token: code, type: 'sms' }
+      );
 
       if (error) throw error;
       // Navigation will be handled by RootNavigator based on auth state

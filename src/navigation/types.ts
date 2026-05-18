@@ -42,6 +42,7 @@ export type GroupsStackParamList = {
   GroupsList: undefined;
   GroupDetail: { groupId: string };
   CreateGroup: undefined;
+  CreateLFG: { groupId: string };
   JoinGroup: undefined;
   GroupFeed: { groupId: string };
   GroupMembers: { groupId: string };

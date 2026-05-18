@@ -9,6 +9,7 @@ import JoinGroupScreen from '../../screens/groups/JoinGroupScreen';
 import GroupFeedScreen from '../../screens/groups/GroupFeedScreen';
 import GroupMembersScreen from '../../screens/groups/GroupMembersScreen';
 import LFGBoardScreen from '../../screens/groups/LFGBoardScreen';
+import CreateLFGScreen from '../../screens/main/CreateLFGScreen';
 import GroupAvailabilityScreen from '../../screens/groups/GroupAvailabilityScreen';
 import EditGroupAvailabilityScreen from '../../screens/groups/EditGroupAvailabilityScreen';
 import GroupLeaderboardScreen from '../../screens/groups/GroupLeaderboardScreen';
@@ -52,6 +53,11 @@ export default function GroupsStack() {
         name="LFGBoard"
         component={LFGBoardScreen}
         options={{ title: 'Looking For Game' }}
+      />
+      <Stack.Screen
+        name="CreateLFG"
+        component={CreateLFGScreen as React.ComponentType<any>}
+        options={{ title: 'Create LFG Post' }}
       />
       <Stack.Screen
         name="GroupAvailability"

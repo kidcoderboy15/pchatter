@@ -10,7 +10,7 @@ import {
   Alert,
 } from 'react-native';
 import { supabase } from '../../services/supabase';
-import { useToast } from '../../contexts/ToastContext';
+import { useToast } from '../../context/ToastContext';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
 interface AvailabilitySlot {

@@ -412,7 +412,7 @@ export default function LogResultScreen({ navigation, route }: LogResultScreenPr
     setShowAchievement(null);
 
     // Navigate after dismissing achievement
-    const { data: result } = supabase
+    supabase
       .from('match_results')
       .select('id')
       .eq('session_id', sessionId)

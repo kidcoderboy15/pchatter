@@ -22,16 +22,21 @@ export default function GroupsListScreen({ navigation }: GroupsListScreenProps) 
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) return;
 
+      const { data: memberships } = await supabase
+        .from('group_members')
+        .select('group_id')
+        .eq('user_id', user.id);
+
+      const groupIds = (memberships ?? []).map((m) => m.group_id);
+      if (groupIds.length === 0) {
+        setGroups([]);
+        return;
+      }
+
       const { data } = await supabase
         .from('groups')
         .select('*')
-        .in(
-          'id',
-          supabase
-            .from('group_members')
-            .select('group_id')
-            .eq('user_id', user.id)
-        );
+        .in('id', groupIds);
 
       if (data) setGroups(data);
     } catch (error) {

@@ -9,7 +9,7 @@ import {
   ActivityIndicator,
 } from 'react-native';
 import { supabase } from '../../services/supabase';
-import { useToast } from '../../contexts/ToastContext';
+import { useToast } from '../../context/ToastContext';
 
 interface Match {
   availability_id: string;

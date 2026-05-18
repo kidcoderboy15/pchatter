@@ -189,7 +189,7 @@ class RewardService {
           REWARDS.WEEKLY_STREAK,
           'Weekly activity streak (3+ games)',
           'weekly_streak',
-          null
+          undefined
         );
       }
     } catch (error) {
@@ -249,7 +249,7 @@ class RewardService {
         .limit(1);
 
       if (!todayLogin || todayLogin.length === 0) {
-        await this.awardTokens(userId, REWARDS.DAILY_LOGIN, 'Daily login', 'daily_login', null);
+        await this.awardTokens(userId, REWARDS.DAILY_LOGIN, 'Daily login', 'daily_login', undefined);
       }
     } catch (error) {
       console.error('Error awarding daily login:', error);
@@ -295,11 +295,11 @@ class RewardService {
 
       // Award streak bonuses (only once per streak level)
       if (streak === 3) {
-        await this.awardTokens(userId, REWARDS.STREAK_3_DAYS, '🔥 3-day streak!', 'streak_3', null);
+        await this.awardTokens(userId, REWARDS.STREAK_3_DAYS, '🔥 3-day streak!', 'streak_3', undefined);
       } else if (streak === 7) {
-        await this.awardTokens(userId, REWARDS.STREAK_7_DAYS, '🔥🔥 7-day streak!', 'streak_7', null);
+        await this.awardTokens(userId, REWARDS.STREAK_7_DAYS, '🔥🔥 7-day streak!', 'streak_7', undefined);
       } else if (streak === 30) {
-        await this.awardTokens(userId, REWARDS.STREAK_30_DAYS, '🔥🔥🔥 30-day streak!', 'streak_30', null);
+        await this.awardTokens(userId, REWARDS.STREAK_30_DAYS, '🔥🔥🔥 30-day streak!', 'streak_30', undefined);
       }
     } catch (error) {
       console.error('Error checking login streak:', error);
@@ -329,7 +329,7 @@ class RewardService {
             .limit(1);
 
           if (!existing || existing.length === 0) {
-            await this.awardTokens(userId, milestone.reward, milestone.reason, 'ace_milestone', null);
+            await this.awardTokens(userId, milestone.reward, milestone.reason, 'ace_milestone', undefined);
           }
         }
       }
