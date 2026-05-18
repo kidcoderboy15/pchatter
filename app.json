@@ -58,25 +58,12 @@
       "favicon": "./assets/favicon.png"
     },
     "plugins": [
-      [
-        "expo-camera",
-        {
-          "cameraPermission": "Allow Pickle Chatter to scan QR codes for adding friends and joining groups."
-        }
-      ],
       "expo-haptics",
       [
         "expo-location",
         {
           "locationAlwaysAndWhenInUsePermission": "Allow Pickle Chatter to find nearby courts and players.",
           "isAndroidBackgroundLocationEnabled": false
-        }
-      ],
-      [
-        "expo-image-picker",
-        {
-          "photosPermission": "Pickle Chatter needs access to your photos to set your profile picture.",
-          "cameraPermission": "Pickle Chatter needs camera access to take profile pictures."
         }
       ]
     ],
