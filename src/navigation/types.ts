@@ -23,8 +23,16 @@ export type OnboardingStackParamList = {
 export type MainTabParamList = {
   Home: undefined;
   Groups: undefined;
+  RTF: undefined;
   Profile: undefined;
   Rewards: undefined;
+};
+
+export type RTFStackParamList = {
+  RTFBrowse: undefined;
+  RTFDetail: { styleId: string };
+  RTFTrending: undefined;
+  RTFProfile: undefined;
 };
 
 export type HomeStackParamList = {

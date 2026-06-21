@@ -1,10 +1,12 @@
 import React from 'react';
+import { Text } from 'react-native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { MainTabParamList } from './types';
 
 import HomeStack from './stacks/HomeStack';
 import GroupsStack from './stacks/GroupsStack';
 import ProfileStack from './stacks/ProfileStack';
+import RTFStack from './stacks/RTFStack';
 import RewardsScreen from '../screens/main/RewardsScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
@@ -32,6 +34,14 @@ export default function MainNavigator() {
         options={{
           tabBarLabel: 'Groups',
           tabBarIcon: () => null,
+        }}
+      />
+      <Tab.Screen
+        name="RTF"
+        component={RTFStack}
+        options={{
+          tabBarLabel: 'RTF',
+          tabBarIcon: () => <Text style={{ fontSize: 18 }}>🔥</Text>,
         }}
       />
       <Tab.Screen
